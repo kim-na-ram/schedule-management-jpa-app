@@ -3,9 +3,13 @@ package com.bootcamp.schedulemanagementjpaapp.service;
 import com.bootcamp.schedulemanagementjpaapp.dto.request.ScheduleRequestDto;
 import com.bootcamp.schedulemanagementjpaapp.dto.response.ScheduleResponseDto;
 import com.bootcamp.schedulemanagementjpaapp.dto.response.SchedulesResponseDto;
+import com.bootcamp.schedulemanagementjpaapp.entity.Manage;
 import com.bootcamp.schedulemanagementjpaapp.entity.Schedule;
+import com.bootcamp.schedulemanagementjpaapp.entity.User;
 import com.bootcamp.schedulemanagementjpaapp.exception.ApiException;
+import com.bootcamp.schedulemanagementjpaapp.repository.ManageJPARepository;
 import com.bootcamp.schedulemanagementjpaapp.repository.ScheduleJPARepository;
+import com.bootcamp.schedulemanagementjpaapp.repository.UserJPARepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,14 +25,17 @@ import static com.bootcamp.schedulemanagementjpaapp.contstant.ResponseCode.*;
 @RequiredArgsConstructor
 public class ScheduleServiceImpl implements ScheduleService {
     private final ScheduleJPARepository scheduleRepository;
+    private final ManageJPARepository manageRepository;
+    private final UserJPARepository userRepository;
 
     @Override
     @Transactional
     public ScheduleResponseDto registerSchedule(ScheduleRequestDto registerScheduleReqDto) {
-        Schedule schedule = registerScheduleReqDto.toEntity();
+        User user = userRepository.findById(registerScheduleReqDto.getUserId())
+                .orElseThrow(() -> new ApiException(NOT_EXIST_USER));
 
         try {
-            Schedule result = scheduleRepository.save(schedule);
+            Schedule result = scheduleRepository.save(registerScheduleReqDto.toEntity(user));
             return new ScheduleResponseDto(result);
         } catch (Exception e) {
             throw new ApiException(FAIL_REGISTER_SCHEDULE);
@@ -68,6 +75,16 @@ public class ScheduleServiceImpl implements ScheduleService {
         Schedule schedule = scheduleRepository.findById(id)
                 .orElseThrow(() -> new ApiException(NOT_EXIST_SCHEDULE));
 
+        for (Long userId : updateScheduleReqDto.getManagerList()) {
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new ApiException(NOT_EXIST_USER));
+            try {
+                manageRepository.save(Manage.builder().schedule(schedule).user(user).build());
+            } catch (Exception e) {
+                throw new ApiException(FAIL_UPDATE_SCHEDULE);
+            }
+        }
+
         try {
             schedule.updateSchedule(updateScheduleReqDto);
             return new ScheduleResponseDto(scheduleRepository.save(schedule));
@@ -79,8 +96,11 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     @Transactional
     public void deleteSchedule(Long id) {
-        scheduleRepository.findById(id)
-                .orElseThrow(() -> new ApiException(NOT_EXIST_SCHEDULE));
+        boolean isExistSchedule = scheduleRepository.existsById(id);
+
+        if (!isExistSchedule) {
+            throw new ApiException(NOT_EXIST_SCHEDULE);
+        }
 
         try {
             scheduleRepository.deleteById(id);

@@ -22,8 +22,9 @@ public class Schedule extends BaseTime {
     private Long id;
 
     @NotNull
-    @Column(name = "user_name")
-    private String userName;
+    @ManyToOne
+    @JoinColumn(name = "reg_user_id")
+    private User user;
 
     @NotNull
     @Column
@@ -36,10 +37,22 @@ public class Schedule extends BaseTime {
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<Comment> comments;
 
+    @OneToMany(mappedBy = "schedule", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    private List<Manage> managers;
+
     public void addComment(Comment comment) {
         this.comments.add(comment);
         if (comment.getSchedule() != this) {
             comment.setSchedule(this);
+        }
+    }
+
+    public void addManagers(List<Manage> managers) {
+        for (Manage manager : managers) {
+            if (!this.managers.contains(manager)) {
+                this.managers.add(manager);
+                manager.setSchedule(this);
+            }
         }
     }
 
@@ -49,9 +62,6 @@ public class Schedule extends BaseTime {
         }
         if(StringUtils.hasText(updateScheduleRequestDto.getContents())) {
             this.contents = updateScheduleRequestDto.getContents();
-        }
-        if(StringUtils.hasText(updateScheduleRequestDto.getUserName())) {
-            this.userName = updateScheduleRequestDto.getUserName();
         }
     }
 }

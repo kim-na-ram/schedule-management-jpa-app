@@ -19,7 +19,14 @@ public enum ResponseCode {
     FAIL_GET_COMMENT("댓글 조회에 실패하였습니다", HttpStatus.INTERNAL_SERVER_ERROR),
     FAIL_UPDATE_COMMENT("댓글 수정에 실패하였습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
     FAIL_DELETE_COMMENT("댓글 삭제에 실패하였습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
-    NOT_EXIST_COMMENT("존재하지 않는 댓글입니다.", HttpStatus.NOT_FOUND)
+    NOT_EXIST_COMMENT("존재하지 않는 댓글입니다.", HttpStatus.NOT_FOUND),
+
+    // user response code
+    FAIL_REGISTER_USER("사용자 등록에 실패하였습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
+    FAIL_GET_USER("사용자 조회에 실패하였습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
+    FAIL_UPDATE_USER("사용자 수정에 실패하였습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
+    FAIL_DELETE_USER("사용자 삭제에 실패하였습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
+    NOT_EXIST_USER("존재하지 않는 사용자입니다.", HttpStatus.NOT_FOUND),
     ;
 
     private final String resultMessage;
