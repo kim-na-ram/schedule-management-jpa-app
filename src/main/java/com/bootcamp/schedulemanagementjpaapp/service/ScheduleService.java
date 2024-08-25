@@ -10,4 +10,5 @@ public interface ScheduleService {
     ScheduleResponseDto getSchedule(Long id);
     SchedulesResponseDto getAllSchedules(Pageable pageable);
     ScheduleResponseDto updateSchedule(Long id, ScheduleRequestDto updateScheduleReqDto);
+    void deleteSchedule(Long id);
 }

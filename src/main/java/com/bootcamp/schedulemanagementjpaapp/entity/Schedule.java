@@ -33,7 +33,7 @@ public class Schedule extends BaseTime {
     @Column
     private String contents;
 
-    @OneToMany(mappedBy = "schedule")
+    @OneToMany(mappedBy = "schedule", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<Comment> comments;
 
     public void addComment(Comment comment) {

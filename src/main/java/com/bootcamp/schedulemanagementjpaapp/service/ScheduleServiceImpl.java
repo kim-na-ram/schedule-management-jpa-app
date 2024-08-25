@@ -75,4 +75,17 @@ public class ScheduleServiceImpl implements ScheduleService {
             throw new ApiException(FAIL_UPDATE_SCHEDULE);
         }
     }
+
+    @Override
+    @Transactional
+    public void deleteSchedule(Long id) {
+        scheduleRepository.findById(id)
+                .orElseThrow(() -> new ApiException(NOT_EXIST_SCHEDULE));
+
+        try {
+            scheduleRepository.deleteById(id);
+        } catch (Exception e) {
+            throw new ApiException(FAIL_DELETE_COMMENT);
+        }
+    }
 }
