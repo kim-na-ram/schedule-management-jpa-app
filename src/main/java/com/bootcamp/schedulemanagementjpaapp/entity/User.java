@@ -33,7 +33,19 @@ public class User extends BaseTime {
     private String email;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    private List<Schedule> schedules;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<Manage> manages;
+
+    public void addSchedules(List<Schedule> schedules) {
+        for (Schedule schedule : schedules) {
+            if (!this.schedules.contains(schedule)) {
+                this.schedules.add(schedule);
+                schedule.setUser(this);
+            }
+        }
+    }
 
     public void addManages(List<Manage> manages) {
         for (Manage manage : manages) {

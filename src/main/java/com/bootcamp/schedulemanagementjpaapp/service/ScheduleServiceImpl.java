@@ -59,9 +59,9 @@ public class ScheduleServiceImpl implements ScheduleService {
     public SchedulesResponseDto getAllSchedules(Pageable pageable) {
         try {
             Page<Schedule> pages = scheduleRepository.findAll(pageable);
-            List<ScheduleResponseDto> schedules = new ArrayList<>();
+            List<SchedulesResponseDto.ScheduleVO> schedules = new ArrayList<>();
             pages.getContent()
-                    .forEach(schedule -> schedules.add(new ScheduleResponseDto(schedule)));
+                    .forEach(schedule -> schedules.add(new SchedulesResponseDto.ScheduleVO(schedule)));
 
             return SchedulesResponseDto.builder().scheduleList(schedules).build();
         } catch (Exception e) {

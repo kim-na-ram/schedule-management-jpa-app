@@ -40,6 +40,14 @@ public class Schedule extends BaseTime {
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<Manage> managers;
 
+    public void setUser(User user) {
+        if (this.user != null) {
+            this.user.getSchedules().remove(this);
+        }
+        this.user = user;
+        user.getSchedules().add(this);
+    }
+
     public void addComment(Comment comment) {
         this.comments.add(comment);
         if (comment.getSchedule() != this) {

@@ -16,7 +16,7 @@ public class ScheduleResponseDto {
     private final String userName;
     private final String userEmail;
     private final Integer commentCount;
-    private final List<String> managerNameList;
+    private final List<ManagerResponseDto> managerList;
     private final LocalDateTime regDate;
     private final LocalDateTime updateDate;
 
@@ -29,7 +29,7 @@ public class ScheduleResponseDto {
         this.userName = schedule.getUser().getName();
         this.userEmail = schedule.getUser().getEmail();
         this.commentCount = schedule.getComments().size();
-        this.managerNameList = schedule.getManagers().stream().map(manage -> manage.getUser().getName()).toList();
+        this.managerList = schedule.getManagers().stream().map(ManagerResponseDto::new).toList();
         this.regDate = schedule.getRegDate();
         this.updateDate = schedule.getUpdateDate();
     }
