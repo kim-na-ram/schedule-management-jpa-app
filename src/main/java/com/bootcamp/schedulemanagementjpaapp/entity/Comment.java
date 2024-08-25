@@ -35,6 +35,14 @@ public class Comment extends BaseTime {
     @Column
     private String contents;
 
+    public void setSchedule(Schedule schedule) {
+        if (this.schedule != null) {
+            this.schedule.getComments().remove(this);
+        }
+        this.schedule = schedule;
+        schedule.getComments().add(this);
+    }
+
     public void updateComment(CommentRequestDto updateCommentRequestDto) {
         if (StringUtils.hasText(updateCommentRequestDto.getContents())) {
             this.contents = updateCommentRequestDto.getContents();

@@ -7,6 +7,8 @@ import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.util.StringUtils;
 
+import java.util.List;
+
 @Getter
 @Entity
 @Builder
@@ -30,6 +32,16 @@ public class Schedule extends BaseTime {
     @NotNull
     @Column
     private String contents;
+
+    @OneToMany(mappedBy = "schedule")
+    private List<Comment> comments;
+
+    public void addComment(Comment comment) {
+        this.comments.add(comment);
+        if (comment.getSchedule() != this) {
+            comment.setSchedule(this);
+        }
+    }
 
     public void updateSchedule(ScheduleRequestDto updateScheduleRequestDto) {
         if(StringUtils.hasText(updateScheduleRequestDto.getTitle())) {

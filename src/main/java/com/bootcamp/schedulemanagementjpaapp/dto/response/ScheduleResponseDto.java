@@ -11,6 +11,7 @@ public class ScheduleResponseDto {
     private final String title;
     private final String contents;
     private final String userName;
+    private final Integer commentCount;
     private final LocalDateTime regDate;
     private final LocalDateTime updateDate;
 
@@ -20,6 +21,7 @@ public class ScheduleResponseDto {
         this.title = schedule.getTitle();
         this.contents = schedule.getContents();
         this.userName = schedule.getUserName();
+        this.commentCount = schedule.getComments().size();
         this.regDate = schedule.getRegDate();
         this.updateDate = schedule.getUpdateDate();
     }
