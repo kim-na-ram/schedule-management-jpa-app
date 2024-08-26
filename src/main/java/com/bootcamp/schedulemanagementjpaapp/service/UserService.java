@@ -1,13 +1,15 @@
 package com.bootcamp.schedulemanagementjpaapp.service;
 
-import com.bootcamp.schedulemanagementjpaapp.dto.request.UserRequestDto;
+import com.bootcamp.schedulemanagementjpaapp.dto.request.UserRegisterRequestDto;
+import com.bootcamp.schedulemanagementjpaapp.dto.request.UserUpdateRequestDto;
+import com.bootcamp.schedulemanagementjpaapp.dto.response.UserRegisterResponseDto;
 import com.bootcamp.schedulemanagementjpaapp.dto.response.UserResponseDto;
 import com.bootcamp.schedulemanagementjpaapp.dto.response.UsersResponseDto;
 
 public interface UserService {
-    UserResponseDto registerUser(UserRequestDto userRequestDto);
+    UserRegisterResponseDto registerUser(UserRegisterRequestDto userRequestDto);
     UserResponseDto getUser(Long id);
     UsersResponseDto getAllUsers();
-    UserResponseDto updateUser(Long id, UserRequestDto userRequestDto);
+    UserResponseDto updateUser(Long id, UserUpdateRequestDto userUpdateRequestDto);
     void deleteUser(Long id);
 }

@@ -1,6 +1,6 @@
 package com.bootcamp.schedulemanagementjpaapp.entity;
 
-import com.bootcamp.schedulemanagementjpaapp.dto.request.UserRequestDto;
+import com.bootcamp.schedulemanagementjpaapp.dto.request.UserUpdateRequestDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -32,6 +32,10 @@ public class User extends BaseTime {
     @Column
     private String email;
 
+    @NotNull
+    @Column
+    private String password;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<Schedule> schedules;
 
@@ -56,12 +60,12 @@ public class User extends BaseTime {
         }
     }
 
-    public void updateUser(UserRequestDto updateUserRequestDto) {
-        if (StringUtils.hasText(updateUserRequestDto.getName())) {
-            this.name = updateUserRequestDto.getName();
+    public void updateUser(UserUpdateRequestDto userUpdateRequestDto) {
+        if (StringUtils.hasText(userUpdateRequestDto.getName())) {
+            this.name = userUpdateRequestDto.getName();
         }
-        if (StringUtils.hasText(updateUserRequestDto.getEmail())) {
-            this.email = updateUserRequestDto.getEmail();
+        if (StringUtils.hasText(userUpdateRequestDto.getEmail())) {
+            this.email = userUpdateRequestDto.getEmail();
         }
     }
 }

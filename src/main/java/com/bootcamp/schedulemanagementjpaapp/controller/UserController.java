@@ -1,6 +1,8 @@
 package com.bootcamp.schedulemanagementjpaapp.controller;
 
-import com.bootcamp.schedulemanagementjpaapp.dto.request.UserRequestDto;
+import com.bootcamp.schedulemanagementjpaapp.dto.request.UserRegisterRequestDto;
+import com.bootcamp.schedulemanagementjpaapp.dto.request.UserUpdateRequestDto;
+import com.bootcamp.schedulemanagementjpaapp.dto.response.UserRegisterResponseDto;
 import com.bootcamp.schedulemanagementjpaapp.dto.response.UserResponseDto;
 import com.bootcamp.schedulemanagementjpaapp.dto.response.UsersResponseDto;
 import com.bootcamp.schedulemanagementjpaapp.service.UserService;
@@ -18,9 +20,9 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/users")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody UserRequestDto registerUserRequestDto) {
-        UserResponseDto userResponseDto = userService.registerUser(registerUserRequestDto);
-        return new ResponseEntity<>(userResponseDto, SUCCESS.getHttpStatus());
+    public ResponseEntity<?> registerUser(@Valid @RequestBody UserRegisterRequestDto userRegisterRequestDto) {
+        UserRegisterResponseDto userRegisterResponseDto = userService.registerUser(userRegisterRequestDto);
+        return new ResponseEntity<>(userRegisterResponseDto, SUCCESS.getHttpStatus());
     }
 
     @GetMapping("/users/{userId}")
@@ -36,8 +38,8 @@ public class UserController {
     }
 
     @PatchMapping("/users/{userId}")
-    public ResponseEntity<?> updateUser(@PathVariable("userId") Long userId, @RequestBody UserRequestDto updateUserRequestDto) {
-        UserResponseDto userResponseDto = userService.updateUser(userId, updateUserRequestDto);
+    public ResponseEntity<?> updateUser(@PathVariable("userId") Long userId, @RequestBody UserUpdateRequestDto userUpdateRequestDto) {
+        UserResponseDto userResponseDto = userService.updateUser(userId, userUpdateRequestDto);
         return new ResponseEntity<>(userResponseDto, SUCCESS.getHttpStatus());
     }
 
