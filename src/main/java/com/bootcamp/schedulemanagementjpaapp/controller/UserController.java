@@ -4,12 +4,13 @@ import com.bootcamp.schedulemanagementjpaapp.dto.request.UserRegisterRequestDto;
 import com.bootcamp.schedulemanagementjpaapp.dto.request.UserUpdateRequestDto;
 import com.bootcamp.schedulemanagementjpaapp.dto.response.UserRegisterResponseDto;
 import com.bootcamp.schedulemanagementjpaapp.dto.response.UserResponseDto;
-import com.bootcamp.schedulemanagementjpaapp.dto.response.UsersResponseDto;
 import com.bootcamp.schedulemanagementjpaapp.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static com.bootcamp.schedulemanagementjpaapp.contstant.ResponseCode.SUCCESS;
 
@@ -32,9 +33,9 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    public ResponseEntity<?> getUsers() {
-        UsersResponseDto usersResponseDto = userService.getAllUsers();
-        return new ResponseEntity<>(usersResponseDto, SUCCESS.getHttpStatus());
+    public ResponseEntity<?> getUserList() {
+        List<UserResponseDto> userListResponseDto = userService.getUserList();
+        return new ResponseEntity<>(userListResponseDto, SUCCESS.getHttpStatus());
     }
 
     @PatchMapping("/users/{userId}")

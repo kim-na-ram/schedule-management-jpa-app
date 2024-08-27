@@ -4,12 +4,13 @@ import com.bootcamp.schedulemanagementjpaapp.dto.request.UserRegisterRequestDto;
 import com.bootcamp.schedulemanagementjpaapp.dto.request.UserUpdateRequestDto;
 import com.bootcamp.schedulemanagementjpaapp.dto.response.UserRegisterResponseDto;
 import com.bootcamp.schedulemanagementjpaapp.dto.response.UserResponseDto;
-import com.bootcamp.schedulemanagementjpaapp.dto.response.UsersResponseDto;
+
+import java.util.List;
 
 public interface UserService {
     UserRegisterResponseDto registerUser(UserRegisterRequestDto userRequestDto);
     UserResponseDto getUser(Long id);
-    UsersResponseDto getAllUsers();
+    List<UserResponseDto> getUserList();
     UserResponseDto updateUser(Long id, UserUpdateRequestDto userUpdateRequestDto);
     void deleteUser(Long id);
 }

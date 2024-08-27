@@ -5,7 +5,6 @@ import com.bootcamp.schedulemanagementjpaapp.dto.request.UserRegisterRequestDto;
 import com.bootcamp.schedulemanagementjpaapp.dto.request.UserUpdateRequestDto;
 import com.bootcamp.schedulemanagementjpaapp.dto.response.UserRegisterResponseDto;
 import com.bootcamp.schedulemanagementjpaapp.dto.response.UserResponseDto;
-import com.bootcamp.schedulemanagementjpaapp.dto.response.UsersResponseDto;
 import com.bootcamp.schedulemanagementjpaapp.entity.User;
 import com.bootcamp.schedulemanagementjpaapp.exception.ApiException;
 import com.bootcamp.schedulemanagementjpaapp.repository.UserJPARepository;
@@ -28,14 +27,12 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserRegisterResponseDto registerUser(UserRegisterRequestDto userRegisterRequestDto) {
-        String password = passwordEncoder.encode(userRegisterRequestDto.getPassword());
+        String encryptPassword = passwordEncoder.encode(userRegisterRequestDto.getPassword());
         try {
-            User user = userRepository.save(userRegisterRequestDto.toEntity(password));
+            User user = userRepository.save(User.dtoToEntity(encryptPassword, userRegisterRequestDto));
+            String accessToken = jwtUtil.createAccessToken(userRegisterRequestDto.getEmail());
 
-            return UserRegisterResponseDto.builder()
-                    .accessToken(jwtUtil.createAccessToken(userRegisterRequestDto.getEmail()))
-                    .user(user)
-                    .build();
+            return new UserRegisterResponseDto(user, accessToken);
         } catch (Exception e) {
             throw new ApiException(FAIL_REGISTER_USER);
         }
@@ -46,22 +43,20 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ApiException(NOT_EXIST_USER));
 
-         try {
-             return new UserResponseDto(user);
-         } catch (Exception e) {
-             throw new ApiException(FAIL_GET_USER);
-         }
+        try {
+            return new UserResponseDto(user);
+        } catch (Exception e) {
+            throw new ApiException(FAIL_GET_USER);
+        }
     }
 
     @Override
-    public UsersResponseDto getAllUsers() {
+    public List<UserResponseDto> getUserList() {
         try {
-            List<UserResponseDto> userResponseDtoList = userRepository.findAll()
+            return userRepository.findAll()
                     .stream()
                     .map(UserResponseDto::new)
                     .toList();
-
-            return UsersResponseDto.builder().userList(userResponseDtoList).build();
         } catch (Exception e) {
             throw new ApiException(FAIL_GET_USER);
         }

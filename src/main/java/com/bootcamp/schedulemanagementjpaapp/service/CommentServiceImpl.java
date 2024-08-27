@@ -2,7 +2,6 @@ package com.bootcamp.schedulemanagementjpaapp.service;
 
 import com.bootcamp.schedulemanagementjpaapp.dto.request.CommentRequestDto;
 import com.bootcamp.schedulemanagementjpaapp.dto.response.CommentResponseDto;
-import com.bootcamp.schedulemanagementjpaapp.dto.response.CommentsResponseDto;
 import com.bootcamp.schedulemanagementjpaapp.entity.Comment;
 import com.bootcamp.schedulemanagementjpaapp.entity.Schedule;
 import com.bootcamp.schedulemanagementjpaapp.exception.ApiException;
@@ -11,6 +10,8 @@ import com.bootcamp.schedulemanagementjpaapp.repository.ScheduleJPARepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static com.bootcamp.schedulemanagementjpaapp.contstant.ResponseCode.*;
 
@@ -27,7 +28,7 @@ public class CommentServiceImpl implements CommentService {
                 .orElseThrow(() -> new ApiException(NOT_EXIST_SCHEDULE));
 
         try {
-            Comment comment = registerCommentRequestDto.toEntity(schedule);
+            Comment comment = Comment.dtoDoEntity(schedule, registerCommentRequestDto);
             Comment result = commentRepository.save(comment);
 
             return new CommentResponseDto(result);
@@ -48,10 +49,9 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public CommentsResponseDto getAllComment(Long scheduleId) {
+    public List<CommentResponseDto> getCommentList(Long scheduleId) {
         try {
-            return CommentsResponseDto.builder().commentList(commentRepository.findAllBySchedule_Id(scheduleId).stream()
-                    .map(CommentResponseDto::new).toList()).build();
+            return commentRepository.findAllBySchedule_Id(scheduleId).stream().map(CommentResponseDto::new).toList();
         } catch (ApiException e) {
             throw new ApiException(FAIL_GET_COMMENT);
         }

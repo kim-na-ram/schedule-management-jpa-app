@@ -3,24 +3,23 @@ package com.bootcamp.schedulemanagementjpaapp.entity;
 import com.bootcamp.schedulemanagementjpaapp.dto.request.ScheduleRequestDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Entity
-@Builder
 @Table(name = "schedule")
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class Schedule extends BaseTime {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class Schedule extends BaseEntity {
     @NotNull
     @ManyToOne
     @JoinColumn(name = "reg_user_id")
@@ -39,6 +38,22 @@ public class Schedule extends BaseTime {
 
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<Manage> managers;
+
+    private Schedule(User user, String title, String contents) {
+        this.user = user;
+        this.title = title;
+        this.contents = contents;
+        this.comments = new ArrayList<>();
+        this.managers = new ArrayList<>();
+    }
+
+    public static Schedule dtoToEntity(User user, ScheduleRequestDto scheduleRequestDto) {
+        return new Schedule(
+                user,
+                scheduleRequestDto.getTitle(),
+                scheduleRequestDto.getContents()
+        );
+    }
 
     public void setUser(User user) {
         if (this.user != null) {

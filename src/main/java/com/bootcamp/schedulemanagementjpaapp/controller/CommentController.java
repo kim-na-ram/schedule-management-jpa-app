@@ -2,11 +2,12 @@ package com.bootcamp.schedulemanagementjpaapp.controller;
 
 import com.bootcamp.schedulemanagementjpaapp.dto.request.CommentRequestDto;
 import com.bootcamp.schedulemanagementjpaapp.dto.response.CommentResponseDto;
-import com.bootcamp.schedulemanagementjpaapp.dto.response.CommentsResponseDto;
 import com.bootcamp.schedulemanagementjpaapp.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static com.bootcamp.schedulemanagementjpaapp.contstant.ResponseCode.SUCCESS;
 
@@ -29,8 +30,8 @@ public class CommentController {
     }
 
     @GetMapping("/comments")
-    public ResponseEntity<?> getAllComment(@PathVariable("scheduleId") Long scheduleId) {
-        CommentsResponseDto commentsResponseDto = commentService.getAllComment(scheduleId);
+    public ResponseEntity<?> getCommentList(@PathVariable("scheduleId") Long scheduleId) {
+        List<CommentResponseDto> commentsResponseDto = commentService.getCommentList(scheduleId);
         return new ResponseEntity<>(commentsResponseDto, SUCCESS.getHttpStatus());
     }
 

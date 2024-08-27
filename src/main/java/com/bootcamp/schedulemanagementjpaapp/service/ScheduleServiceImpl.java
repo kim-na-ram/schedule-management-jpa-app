@@ -1,8 +1,8 @@
 package com.bootcamp.schedulemanagementjpaapp.service;
 
 import com.bootcamp.schedulemanagementjpaapp.dto.request.ScheduleRequestDto;
+import com.bootcamp.schedulemanagementjpaapp.dto.response.ScheduleFindResponseDto;
 import com.bootcamp.schedulemanagementjpaapp.dto.response.ScheduleResponseDto;
-import com.bootcamp.schedulemanagementjpaapp.dto.response.SchedulesResponseDto;
 import com.bootcamp.schedulemanagementjpaapp.entity.Manage;
 import com.bootcamp.schedulemanagementjpaapp.entity.Schedule;
 import com.bootcamp.schedulemanagementjpaapp.entity.User;
@@ -16,7 +16,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.bootcamp.schedulemanagementjpaapp.contstant.ResponseCode.*;
@@ -35,7 +34,7 @@ public class ScheduleServiceImpl implements ScheduleService {
                 .orElseThrow(() -> new ApiException(NOT_EXIST_USER));
 
         try {
-            Schedule result = scheduleRepository.save(registerScheduleReqDto.toEntity(user));
+            Schedule result = scheduleRepository.save(Schedule.dtoToEntity(user, registerScheduleReqDto));
             return new ScheduleResponseDto(result);
         } catch (Exception e) {
             throw new ApiException(FAIL_REGISTER_SCHEDULE);
@@ -56,14 +55,11 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     @Transactional(readOnly = true)
-    public SchedulesResponseDto getAllSchedules(Pageable pageable) {
+    public List<ScheduleFindResponseDto> getScheduleList(Pageable pageable) {
         try {
             Page<Schedule> pages = scheduleRepository.findAll(pageable);
-            List<SchedulesResponseDto.ScheduleVO> schedules = new ArrayList<>();
-            pages.getContent()
-                    .forEach(schedule -> schedules.add(new SchedulesResponseDto.ScheduleVO(schedule)));
 
-            return SchedulesResponseDto.builder().scheduleList(schedules).build();
+            return pages.getContent().stream().map(ScheduleFindResponseDto::new).toList();
         } catch (Exception e) {
             throw new ApiException(FAIL_GET_SCHEDULE);
         }
@@ -75,11 +71,11 @@ public class ScheduleServiceImpl implements ScheduleService {
         Schedule schedule = scheduleRepository.findById(id)
                 .orElseThrow(() -> new ApiException(NOT_EXIST_SCHEDULE));
 
-        for (Long userId : updateScheduleReqDto.getManagerList()) {
-            User user = userRepository.findById(userId)
+        for (String managerEmail : updateScheduleReqDto.getManagerList()) {
+            User user = userRepository.findByEmail(managerEmail)
                     .orElseThrow(() -> new ApiException(NOT_EXIST_USER));
             try {
-                manageRepository.save(Manage.builder().schedule(schedule).user(user).build());
+                manageRepository.save(new Manage(schedule, user));
             } catch (Exception e) {
                 throw new ApiException(FAIL_UPDATE_SCHEDULE);
             }

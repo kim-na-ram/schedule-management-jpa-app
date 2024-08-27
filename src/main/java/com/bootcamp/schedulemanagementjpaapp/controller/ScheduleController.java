@@ -1,8 +1,8 @@
 package com.bootcamp.schedulemanagementjpaapp.controller;
 
 import com.bootcamp.schedulemanagementjpaapp.dto.request.ScheduleRequestDto;
+import com.bootcamp.schedulemanagementjpaapp.dto.response.ScheduleFindResponseDto;
 import com.bootcamp.schedulemanagementjpaapp.dto.response.ScheduleResponseDto;
-import com.bootcamp.schedulemanagementjpaapp.dto.response.SchedulesResponseDto;
 import com.bootcamp.schedulemanagementjpaapp.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -10,6 +10,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static com.bootcamp.schedulemanagementjpaapp.contstant.ResponseCode.SUCCESS;
 
@@ -33,7 +35,7 @@ public class ScheduleController {
 
     @GetMapping("/schedules")
     public ResponseEntity<?> getAllSchedules(@PageableDefault(sort = "updateDate", direction = Sort.Direction.DESC) final Pageable pageable) {
-        SchedulesResponseDto schedulesResponseDto = scheduleService.getAllSchedules(pageable);
+        List<ScheduleFindResponseDto> schedulesResponseDto = scheduleService.getScheduleList(pageable);
         return new ResponseEntity<>(schedulesResponseDto, SUCCESS.getHttpStatus());
     }
 

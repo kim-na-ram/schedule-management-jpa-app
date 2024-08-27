@@ -15,7 +15,7 @@ public class JWTUtil {
 
     private final SecretKey secretKey;
 
-    public JWTUtil(@Value("${custom.jwt.secretKey}") String secretKey) {
+    public JWTUtil(@Value("${jwt.secret.key}") String secretKey) {
         this.secretKey = Keys.hmacShaKeyFor(Decoders.BASE64URL.decode(secretKey));
     }
 

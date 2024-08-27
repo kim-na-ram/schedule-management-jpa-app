@@ -3,8 +3,7 @@ package com.bootcamp.schedulemanagementjpaapp.entity;
 import com.bootcamp.schedulemanagementjpaapp.dto.request.CommentRequestDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -12,16 +11,10 @@ import org.springframework.util.StringUtils;
 
 @Getter
 @Entity
-@Builder
 @Table(name = "comment")
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
-public class Comment extends BaseTime {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class Comment extends BaseEntity {
     @NotNull
     @ManyToOne
     @JoinColumn(name = "schedule_id")
@@ -34,6 +27,20 @@ public class Comment extends BaseTime {
     @NotNull
     @Column
     private String contents;
+
+    private Comment(Schedule schedule, String regUserName, String contents) {
+        this.schedule = schedule;
+        this.regUserName = regUserName;
+        this.contents = contents;
+    }
+
+    public static Comment dtoDoEntity(Schedule schedule, CommentRequestDto commentRequestDto) {
+        return new Comment(
+                schedule,
+                commentRequestDto.getUserName(),
+                commentRequestDto.getContents()
+        );
+    }
 
     public void setSchedule(Schedule schedule) {
         if (this.schedule != null) {

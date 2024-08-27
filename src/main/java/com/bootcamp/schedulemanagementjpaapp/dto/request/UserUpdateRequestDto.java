@@ -1,13 +1,17 @@
 package com.bootcamp.schedulemanagementjpaapp.dto.request;
 
 import jakarta.validation.constraints.Email;
-import lombok.Builder;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Getter
-@Builder
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserUpdateRequestDto {
-    private final String name;
+    private String name;
     @Email(message = "잘못된 이메일 형식입니다.")
-    private final String email;
+    private String email;
+    private List<String> managerList;
 }

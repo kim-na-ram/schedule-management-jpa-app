@@ -1,28 +1,16 @@
 package com.bootcamp.schedulemanagementjpaapp.dto.request;
 
-import com.bootcamp.schedulemanagementjpaapp.entity.Schedule;
-import com.bootcamp.schedulemanagementjpaapp.entity.User;
-import lombok.Builder;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-@Builder
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ScheduleRequestDto {
-    private final String title;
-    private final String contents;
-    private final Long userId;
-    private final List<Long> managerList;
-
-    public Schedule toEntity(User user) {
-        return Schedule.builder()
-                .title(title)
-                .contents(contents)
-                .user(user)
-                .comments(new ArrayList<>())
-                .managers(new ArrayList<>())
-                .build();
-    }
+    private String title;
+    private String contents;
+    private Long userId;
+    private List<String> managerList;
 }
