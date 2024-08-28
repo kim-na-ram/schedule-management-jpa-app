@@ -1,6 +1,6 @@
 package com.bootcamp.schedulemanagementjpaapp.entity;
 
-import com.bootcamp.schedulemanagementjpaapp.contstant.Authority;
+import com.bootcamp.schedulemanagementjpaapp.common.enums.Authority;
 import com.bootcamp.schedulemanagementjpaapp.dto.request.UserRegisterRequestDto;
 import com.bootcamp.schedulemanagementjpaapp.dto.request.UserUpdateRequestDto;
 import jakarta.persistence.*;

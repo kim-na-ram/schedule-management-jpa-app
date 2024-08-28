@@ -1,11 +1,11 @@
-package com.bootcamp.schedulemanagementjpaapp.contstant;
+package com.bootcamp.schedulemanagementjpaapp.common.enums;
 
 
-import com.bootcamp.schedulemanagementjpaapp.exception.ApiException;
+import com.bootcamp.schedulemanagementjpaapp.common.exception.ApiException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import static com.bootcamp.schedulemanagementjpaapp.contstant.ResponseCode.INVALID_USER_AUTHORITY;
+import static com.bootcamp.schedulemanagementjpaapp.common.enums.ResponseCode.INVALID_USER_AUTHORITY;
 
 @Getter
 @AllArgsConstructor

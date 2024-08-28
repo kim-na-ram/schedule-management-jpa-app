@@ -10,16 +10,16 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ScheduleFindResponseDto {
-    private Long scheduleId;
+    private long scheduleId;
     private String title;
     private String contents;
     private String userName;
     private String userEmail;
-    private Integer commentCount;
+    private int commentCount;
     private LocalDateTime regDate;
     private LocalDateTime updateDate;
 
-    public ScheduleFindResponseDto(Schedule schedule) {
+    private ScheduleFindResponseDto(Schedule schedule) {
         this.scheduleId = schedule.getId();
         this.title = schedule.getTitle();
         this.contents = schedule.getContents();
@@ -28,5 +28,9 @@ public class ScheduleFindResponseDto {
         this.commentCount = schedule.getComments().size();
         this.regDate = schedule.getRegDate();
         this.updateDate = schedule.getUpdateDate();
+    }
+
+    public static ScheduleFindResponseDto from(Schedule schedule) {
+        return new ScheduleFindResponseDto(schedule);
     }
 }

@@ -10,17 +10,21 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserResponseDto {
-    private Long userId;
+    private long userId;
     private String name;
     private String email;
     private LocalDateTime regDate;
     private LocalDateTime updateDate;
 
-    public UserResponseDto(User user) {
+    private UserResponseDto(User user) {
         this.userId = user.getId();
         this.name = user.getName();
         this.email = user.getEmail();
         this.regDate = user.getRegDate();
         this.updateDate = user.getUpdateDate();
+    }
+
+    public static UserResponseDto from(User user) {
+        return new UserResponseDto(user);
     }
 }

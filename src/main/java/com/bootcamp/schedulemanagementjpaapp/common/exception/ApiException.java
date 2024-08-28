@@ -1,6 +1,6 @@
-package com.bootcamp.schedulemanagementjpaapp.exception;
+package com.bootcamp.schedulemanagementjpaapp.common.exception;
 
-import com.bootcamp.schedulemanagementjpaapp.contstant.ResponseCode;
+import com.bootcamp.schedulemanagementjpaapp.common.enums.ResponseCode;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 

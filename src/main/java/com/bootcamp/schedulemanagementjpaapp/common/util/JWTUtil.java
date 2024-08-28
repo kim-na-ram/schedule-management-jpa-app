@@ -1,7 +1,9 @@
-package com.bootcamp.schedulemanagementjpaapp.util;
+package com.bootcamp.schedulemanagementjpaapp.common.util;
 
-import com.bootcamp.schedulemanagementjpaapp.exception.ApiException;
+import com.bootcamp.schedulemanagementjpaapp.common.exception.ApiException;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -12,8 +14,10 @@ import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import java.util.Date;
 
-import static com.bootcamp.schedulemanagementjpaapp.contstant.ResponseCode.EXPIRE_ACCESS_TOKEN;
-import static com.bootcamp.schedulemanagementjpaapp.contstant.ResponseCode.INVALID_ACCESS_TOKEN;
+import static com.bootcamp.schedulemanagementjpaapp.common.constant.Const.USER_AUTHORITY;
+import static com.bootcamp.schedulemanagementjpaapp.common.constant.Const.USER_EMAIL;
+import static com.bootcamp.schedulemanagementjpaapp.common.enums.ResponseCode.EXPIRE_ACCESS_TOKEN;
+import static com.bootcamp.schedulemanagementjpaapp.common.enums.ResponseCode.INVALID_ACCESS_TOKEN;
 
 @Component
 public class JWTUtil {
@@ -30,25 +34,29 @@ public class JWTUtil {
 
         return Jwts.builder()
                 .subject(email)
-                .claim("email", email)
-                .claim("authority", authority)
+                .claim(USER_EMAIL, email)
+                .claim(USER_AUTHORITY, authority)
                 .issuedAt(date)
                 .expiration(new Date(date.getTime() + TOKEN_TIME))
                 .signWith(secretKey, Jwts.SIG.HS512)
                 .compact();
     }
 
+    private Jws<Claims> getClaimsFromToken(String jwtToken) {
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(jwtToken);
+    }
+
     public String getUserEmail(String jwtToken) {
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(jwtToken).getPayload().getSubject();
+        return getClaimsFromToken(jwtToken).getPayload().getSubject();
     }
 
     public String getAuthority(String jwtToken) {
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(jwtToken).getPayload().get("authority").toString();
+        return getClaimsFromToken(jwtToken).getPayload().get(USER_AUTHORITY).toString();
     }
 
     public void verifyToken(String jwtToken) {
         try {
-            Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(jwtToken);
+            getClaimsFromToken(jwtToken);
         } catch (SignatureException e) {
             throw new ApiException(INVALID_ACCESS_TOKEN);
         } catch (ExpiredJwtException e) {

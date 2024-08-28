@@ -11,25 +11,29 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ScheduleResponseDto {
-    private Long scheduleId;
+    private long scheduleId;
     private String title;
     private String contents;
     private String userName;
     private String userEmail;
-    private Integer commentCount;
+    private int commentCount;
     private List<ManagerResponseDto> managerList;
     private LocalDateTime regDate;
     private LocalDateTime updateDate;
 
-    public ScheduleResponseDto(Schedule schedule) {
+    private ScheduleResponseDto(Schedule schedule) {
         this.scheduleId = schedule.getId();
         this.title = schedule.getTitle();
         this.contents = schedule.getContents();
         this.userName = schedule.getUser().getName();
         this.userEmail = schedule.getUser().getEmail();
         this.commentCount = schedule.getComments().size();
-        this.managerList = schedule.getManagers().stream().map(ManagerResponseDto::new).toList();
+        this.managerList = schedule.getManagers().stream().map(ManagerResponseDto::from).toList();
         this.regDate = schedule.getRegDate();
         this.updateDate = schedule.getUpdateDate();
+    }
+
+    public static ScheduleResponseDto from(Schedule schedule) {
+        return new ScheduleResponseDto(schedule);
     }
 }

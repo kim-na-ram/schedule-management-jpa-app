@@ -1,4 +1,4 @@
-package com.bootcamp.schedulemanagementjpaapp.service;
+package com.bootcamp.schedulemanagementjpaapp.service.user;
 
 import com.bootcamp.schedulemanagementjpaapp.dto.request.UserLoginRequestDto;
 import com.bootcamp.schedulemanagementjpaapp.dto.request.UserRegisterRequestDto;

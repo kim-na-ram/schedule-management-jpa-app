@@ -1,10 +1,9 @@
-package com.bootcamp.schedulemanagementjpaapp.filter;
+package com.bootcamp.schedulemanagementjpaapp.common.filter;
 
-import com.bootcamp.schedulemanagementjpaapp.contstant.Authority;
-import com.bootcamp.schedulemanagementjpaapp.contstant.ResponseCode;
-import com.bootcamp.schedulemanagementjpaapp.exception.ApiException;
+import com.bootcamp.schedulemanagementjpaapp.common.enums.Authority;
+import com.bootcamp.schedulemanagementjpaapp.common.exception.ApiException;
+import com.bootcamp.schedulemanagementjpaapp.common.util.JWTUtil;
 import com.bootcamp.schedulemanagementjpaapp.repository.UserJPARepository;
-import com.bootcamp.schedulemanagementjpaapp.util.JWTUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,11 +15,16 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-import static com.bootcamp.schedulemanagementjpaapp.contstant.ResponseCode.REQUIRED_ACCESS_TOKEN;
+import static com.bootcamp.schedulemanagementjpaapp.common.constant.Const.USER_AUTHORITY;
+import static com.bootcamp.schedulemanagementjpaapp.common.constant.Const.USER_EMAIL;
+import static com.bootcamp.schedulemanagementjpaapp.common.enums.ResponseCode.REQUIRED_ACCESS_TOKEN;
 
 @Component
 @RequiredArgsConstructor
 public class AuthFilter extends OncePerRequestFilter {
+    private final String AUTHORIZATION_HEADER = "Authorization";
+    private final String BEARER_PREFIX = "Bearer ";
+
     private final JWTUtil jwtUtil;
     private final UserJPARepository userRepository;
 
@@ -33,21 +37,20 @@ public class AuthFilter extends OncePerRequestFilter {
                     && url.startsWith("/api/auth")) {
                 filterChain.doFilter(request, response);
             } else {
-                String headerToken = request.getHeader("Authorization");
+                String headerToken = request.getHeader(AUTHORIZATION_HEADER);
 
                 if (StringUtils.hasText(headerToken)) {
-                    String token = headerToken.replace("Bearer ", "");
+                    String token = headerToken.replace(BEARER_PREFIX, "");
 
                     jwtUtil.verifyToken(token);
                     String email = jwtUtil.getUserEmail(token);
                     String authority = jwtUtil.getAuthority(token);
 
                     if (StringUtils.hasText(email) && StringUtils.hasText(authority)) {
-                        userRepository.findByEmail(email)
-                                .orElseThrow(() -> new ApiException(ResponseCode.NOT_EXIST_USER));
+                        userRepository.existsUserByEmail(email);
 
-                        request.setAttribute("email", email);
-                        request.setAttribute("authority", Authority.from(authority));
+                        request.setAttribute(USER_EMAIL, email);
+                        request.setAttribute(USER_AUTHORITY, Authority.from(authority));
 
                         filterChain.doFilter(request, response);
                     }

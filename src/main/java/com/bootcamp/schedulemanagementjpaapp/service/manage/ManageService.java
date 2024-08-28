@@ -1,4 +1,4 @@
-package com.bootcamp.schedulemanagementjpaapp.service;
+package com.bootcamp.schedulemanagementjpaapp.service.manage;
 
 import com.bootcamp.schedulemanagementjpaapp.entity.Schedule;
 

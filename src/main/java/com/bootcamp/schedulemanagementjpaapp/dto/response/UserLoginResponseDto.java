@@ -9,7 +9,11 @@ import lombok.NoArgsConstructor;
 public class UserLoginResponseDto {
     private String accessToken;
 
-    public UserLoginResponseDto(String accessToken) {
+    private UserLoginResponseDto(String accessToken) {
         this.accessToken = accessToken;
+    }
+
+    public static UserLoginResponseDto of(String accessToken) {
+        return new UserLoginResponseDto(accessToken);
     }
 }

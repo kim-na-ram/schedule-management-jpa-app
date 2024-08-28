@@ -4,7 +4,7 @@ import com.bootcamp.schedulemanagementjpaapp.dto.request.UserLoginRequestDto;
 import com.bootcamp.schedulemanagementjpaapp.dto.request.UserRegisterRequestDto;
 import com.bootcamp.schedulemanagementjpaapp.dto.response.UserLoginResponseDto;
 import com.bootcamp.schedulemanagementjpaapp.dto.response.UserRegisterResponseDto;
-import com.bootcamp.schedulemanagementjpaapp.service.UserService;
+import com.bootcamp.schedulemanagementjpaapp.service.user.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import static com.bootcamp.schedulemanagementjpaapp.contstant.ResponseCode.SUCCESS;
+import static com.bootcamp.schedulemanagementjpaapp.common.enums.ResponseCode.SUCCESS;
 
 @Controller
 @RequiredArgsConstructor

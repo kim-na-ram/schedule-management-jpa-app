@@ -1,6 +1,6 @@
-package com.bootcamp.schedulemanagementjpaapp.service;
+package com.bootcamp.schedulemanagementjpaapp.service.schedule;
 
-import com.bootcamp.schedulemanagementjpaapp.contstant.Authority;
+import com.bootcamp.schedulemanagementjpaapp.common.enums.Authority;
 import com.bootcamp.schedulemanagementjpaapp.dto.request.ScheduleRequestDto;
 import com.bootcamp.schedulemanagementjpaapp.dto.response.ScheduleFindResponseDto;
 import com.bootcamp.schedulemanagementjpaapp.dto.response.ScheduleResponseDto;

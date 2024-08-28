@@ -2,14 +2,14 @@ package com.bootcamp.schedulemanagementjpaapp.controller;
 
 import com.bootcamp.schedulemanagementjpaapp.dto.request.UserUpdateRequestDto;
 import com.bootcamp.schedulemanagementjpaapp.dto.response.UserResponseDto;
-import com.bootcamp.schedulemanagementjpaapp.service.UserService;
+import com.bootcamp.schedulemanagementjpaapp.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.bootcamp.schedulemanagementjpaapp.contstant.ResponseCode.SUCCESS;
+import static com.bootcamp.schedulemanagementjpaapp.common.enums.ResponseCode.SUCCESS;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,7 +30,10 @@ public class UserController {
     }
 
     @PatchMapping("/users/{userEmail}")
-    public ResponseEntity<?> updateUser(@PathVariable("userEmail") String userEmail, @RequestBody UserUpdateRequestDto userUpdateRequestDto) {
+    public ResponseEntity<?> updateUser(
+            @PathVariable("userEmail") String userEmail,
+            @RequestBody UserUpdateRequestDto userUpdateRequestDto
+    ) {
         UserResponseDto userResponseDto = userService.updateUser(userEmail, userUpdateRequestDto);
         return new ResponseEntity<>(userResponseDto, SUCCESS.getHttpStatus());
     }

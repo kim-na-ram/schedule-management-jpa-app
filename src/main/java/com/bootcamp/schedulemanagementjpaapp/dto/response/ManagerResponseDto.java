@@ -8,13 +8,17 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ManagerResponseDto {
-    private Long managerId;
+    private long managerId;
     private String managerName;
     private String managerEmail;
 
-    public ManagerResponseDto(Manage mamager) {
+    private ManagerResponseDto(Manage mamager) {
         this.managerId = mamager.getUser().getId();
         this.managerName = mamager.getUser().getName();
         this.managerEmail = mamager.getUser().getEmail();
+    }
+
+    public static ManagerResponseDto from(Manage mamager) {
+        return new ManagerResponseDto(mamager);
     }
 }

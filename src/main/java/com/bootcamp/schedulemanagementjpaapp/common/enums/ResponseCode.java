@@ -1,4 +1,4 @@
-package com.bootcamp.schedulemanagementjpaapp.contstant;
+package com.bootcamp.schedulemanagementjpaapp.common.enums;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

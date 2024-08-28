@@ -1,4 +1,4 @@
-package com.bootcamp.schedulemanagementjpaapp.service;
+package com.bootcamp.schedulemanagementjpaapp.service.comment;
 
 import com.bootcamp.schedulemanagementjpaapp.dto.request.CommentRequestDto;
 import com.bootcamp.schedulemanagementjpaapp.dto.response.CommentResponseDto;
