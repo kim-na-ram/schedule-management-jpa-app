@@ -4,6 +4,7 @@ import com.bootcamp.schedulemanagementjpaapp.dto.request.ScheduleRequestDto;
 import com.bootcamp.schedulemanagementjpaapp.dto.response.ScheduleFindResponseDto;
 import com.bootcamp.schedulemanagementjpaapp.dto.response.ScheduleResponseDto;
 import com.bootcamp.schedulemanagementjpaapp.service.ScheduleService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -22,8 +23,8 @@ public class ScheduleController {
     private final ScheduleService scheduleService;
 
     @PostMapping("/schedules")
-    public ResponseEntity<?> registerSchedule(@RequestBody ScheduleRequestDto registerScheduleRequestDto) {
-        ScheduleResponseDto scheduleRspDto = scheduleService.registerSchedule(registerScheduleRequestDto);
+    public ResponseEntity<?> registerSchedule(@RequestBody ScheduleRequestDto registerScheduleRequestDto, HttpServletRequest request) {
+        ScheduleResponseDto scheduleRspDto = scheduleService.registerSchedule((String) request.getAttribute("email"), registerScheduleRequestDto);
         return new ResponseEntity<>(scheduleRspDto, SUCCESS.getHttpStatus());
     }
 
@@ -40,14 +41,14 @@ public class ScheduleController {
     }
 
     @PatchMapping("/schedules/{scheduleId}")
-    public ResponseEntity<?> updateSchedule(@PathVariable("scheduleId") Long scheduleId, @RequestBody ScheduleRequestDto updateScheduleReqDto) {
-        ScheduleResponseDto scheduleRspDto = scheduleService.updateSchedule(scheduleId, updateScheduleReqDto);
+    public ResponseEntity<?> updateSchedule(@PathVariable("scheduleId") Long scheduleId, @RequestBody ScheduleRequestDto updateScheduleReqDto, HttpServletRequest request) {
+        ScheduleResponseDto scheduleRspDto = scheduleService.updateSchedule(scheduleId, (String) request.getAttribute("email"), updateScheduleReqDto);
         return new ResponseEntity<>(scheduleRspDto, SUCCESS.getHttpStatus());
     }
 
     @DeleteMapping("/schedules/{scheduleId}")
-    public ResponseEntity<?> deleteSchedule(@PathVariable("scheduleId") Long scheduleId) {
-        scheduleService.deleteSchedule(scheduleId);
+    public ResponseEntity<?> deleteSchedule(@PathVariable("scheduleId") Long scheduleId, HttpServletRequest request) {
+        scheduleService.deleteSchedule(scheduleId, (String) request.getAttribute("email"));
         return new ResponseEntity<>(SUCCESS.getResultMessage(), SUCCESS.getHttpStatus());
     }
 }

@@ -1,8 +1,10 @@
 package com.bootcamp.schedulemanagementjpaapp.service;
 
 import com.bootcamp.schedulemanagementjpaapp.config.PasswordEncoder;
+import com.bootcamp.schedulemanagementjpaapp.dto.request.UserLoginRequestDto;
 import com.bootcamp.schedulemanagementjpaapp.dto.request.UserRegisterRequestDto;
 import com.bootcamp.schedulemanagementjpaapp.dto.request.UserUpdateRequestDto;
+import com.bootcamp.schedulemanagementjpaapp.dto.response.UserLoginResponseDto;
 import com.bootcamp.schedulemanagementjpaapp.dto.response.UserRegisterResponseDto;
 import com.bootcamp.schedulemanagementjpaapp.dto.response.UserResponseDto;
 import com.bootcamp.schedulemanagementjpaapp.entity.User;
@@ -27,7 +29,14 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserRegisterResponseDto registerUser(UserRegisterRequestDto userRegisterRequestDto) {
+        boolean isExistUser = userRepository.existsByEmail(userRegisterRequestDto.getEmail());
+
+        if(isExistUser) {
+            throw new ApiException(DUPLICATE_USER_EMAIL);
+        }
+
         String encryptPassword = passwordEncoder.encode(userRegisterRequestDto.getPassword());
+
         try {
             User user = userRepository.save(User.dtoToEntity(encryptPassword, userRegisterRequestDto));
             String accessToken = jwtUtil.createAccessToken(userRegisterRequestDto.getEmail());
@@ -39,8 +48,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponseDto getUser(Long id) {
-        User user = userRepository.findById(id)
+    public UserLoginResponseDto loginUser(UserLoginRequestDto userLoginRequestDto) {
+        User user = userRepository.findByEmail(userLoginRequestDto.getEmail()).orElseThrow(() -> new ApiException(MISMATCH_EMAIL_OR_PASSWORD));
+
+        if(!passwordEncoder.matches(userLoginRequestDto.getPassword(), user.getPassword())) {
+            throw new ApiException(MISMATCH_EMAIL_OR_PASSWORD);
+        }
+
+        try {
+            return new UserLoginResponseDto(jwtUtil.createAccessToken(userLoginRequestDto.getEmail()));
+        } catch (Exception e) {
+            throw new ApiException(FAIL_LOGIN_USER);
+        }
+    }
+
+    @Override
+    public UserResponseDto getUser(String email) {
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ApiException(NOT_EXIST_USER));
 
         try {
@@ -64,8 +88,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserResponseDto updateUser(Long id, UserUpdateRequestDto userUpdateRequestDto) {
-        User user = userRepository.findById(id)
+    public UserResponseDto updateUser(String email, UserUpdateRequestDto userUpdateRequestDto) {
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ApiException(NOT_EXIST_USER));
 
         try {
@@ -78,15 +102,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void deleteUser(Long id) {
-        boolean isExistUser = userRepository.existsById(id);
+    public void deleteUser(String email) {
+        boolean isExistUser = userRepository.existsByEmail(email);
 
         if (!isExistUser) {
             throw new ApiException(NOT_EXIST_USER);
         }
 
         try {
-            userRepository.deleteById(id);
+            userRepository.deleteByEmail(email);
         } catch (Exception e) {
             throw new ApiException(FAIL_DELETE_USER);
         }

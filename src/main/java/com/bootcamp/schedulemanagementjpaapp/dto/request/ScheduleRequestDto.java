@@ -11,6 +11,5 @@ import java.util.List;
 public class ScheduleRequestDto {
     private String title;
     private String contents;
-    private Long userId;
     private List<String> managerList;
 }

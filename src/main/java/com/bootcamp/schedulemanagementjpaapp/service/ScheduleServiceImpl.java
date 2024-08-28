@@ -3,11 +3,9 @@ package com.bootcamp.schedulemanagementjpaapp.service;
 import com.bootcamp.schedulemanagementjpaapp.dto.request.ScheduleRequestDto;
 import com.bootcamp.schedulemanagementjpaapp.dto.response.ScheduleFindResponseDto;
 import com.bootcamp.schedulemanagementjpaapp.dto.response.ScheduleResponseDto;
-import com.bootcamp.schedulemanagementjpaapp.entity.Manage;
 import com.bootcamp.schedulemanagementjpaapp.entity.Schedule;
 import com.bootcamp.schedulemanagementjpaapp.entity.User;
 import com.bootcamp.schedulemanagementjpaapp.exception.ApiException;
-import com.bootcamp.schedulemanagementjpaapp.repository.ManageJPARepository;
 import com.bootcamp.schedulemanagementjpaapp.repository.ScheduleJPARepository;
 import com.bootcamp.schedulemanagementjpaapp.repository.UserJPARepository;
 import lombok.RequiredArgsConstructor;
@@ -17,20 +15,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 
 import static com.bootcamp.schedulemanagementjpaapp.contstant.ResponseCode.*;
 
 @Service
 @RequiredArgsConstructor
 public class ScheduleServiceImpl implements ScheduleService {
+    private final ManageServiceImpl manageService;
+
     private final ScheduleJPARepository scheduleRepository;
-    private final ManageJPARepository manageRepository;
     private final UserJPARepository userRepository;
 
     @Override
     @Transactional
-    public ScheduleResponseDto registerSchedule(ScheduleRequestDto registerScheduleReqDto) {
-        User user = userRepository.findById(registerScheduleReqDto.getUserId())
+    public ScheduleResponseDto registerSchedule(String email, ScheduleRequestDto registerScheduleReqDto) {
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ApiException(NOT_EXIST_USER));
 
         try {
@@ -42,6 +42,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ScheduleResponseDto getSchedule(Long id) {
         Schedule schedule = scheduleRepository.findById(id)
                 .orElseThrow(() -> new ApiException(NOT_EXIST_SCHEDULE));
@@ -67,21 +68,16 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     @Transactional
-    public ScheduleResponseDto updateSchedule(Long id, ScheduleRequestDto updateScheduleReqDto) {
-        Schedule schedule = scheduleRepository.findById(id)
+    public ScheduleResponseDto updateSchedule(Long id, String email, ScheduleRequestDto updateScheduleReqDto) {
+        Schedule schedule = scheduleRepository.findByIdAndUser_Email(id, email)
                 .orElseThrow(() -> new ApiException(NOT_EXIST_SCHEDULE));
 
-        for (String managerEmail : updateScheduleReqDto.getManagerList()) {
-            User user = userRepository.findByEmail(managerEmail)
-                    .orElseThrow(() -> new ApiException(NOT_EXIST_USER));
-            try {
-                manageRepository.save(new Manage(schedule, user));
-            } catch (Exception e) {
-                throw new ApiException(FAIL_UPDATE_SCHEDULE);
-            }
-        }
-
         try {
+            Set<String> emailSet = Set.copyOf(updateScheduleReqDto.getManagerList());
+            if(!emailSet.isEmpty()) {
+                manageService.assignManage(emailSet, schedule);
+            }
+
             schedule.updateSchedule(updateScheduleReqDto);
             return new ScheduleResponseDto(scheduleRepository.save(schedule));
         } catch (Exception e) {
@@ -91,8 +87,8 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     @Transactional
-    public void deleteSchedule(Long id) {
-        boolean isExistSchedule = scheduleRepository.existsById(id);
+    public void deleteSchedule(Long id, String email) {
+        boolean isExistSchedule = scheduleRepository.existsByIdAndUser_Email(id, email);
 
         if (!isExistSchedule) {
             throw new ApiException(NOT_EXIST_SCHEDULE);

@@ -33,20 +33,4 @@ public class Manage {
         this.schedule = schedule;
         this.user = user;
     }
-
-    public void setUser(User user) {
-        if (this.user != null) {
-            this.user.getManages().remove(this);
-        }
-        this.user = user;
-        user.getManages().add(this);
-    }
-
-    public void setSchedule(Schedule schedule) {
-        if (this.schedule != null) {
-            this.schedule.getManagers().remove(this);
-        }
-        this.schedule = schedule;
-        schedule.getManagers().add(this);
-    }
 }

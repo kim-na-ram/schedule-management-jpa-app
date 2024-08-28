@@ -51,24 +51,6 @@ public class User extends BaseEntity {
         return new User(userRegisterRequestDto.getName(), userRegisterRequestDto.getEmail(), encryptPassword);
     }
 
-    public void addSchedules(List<Schedule> schedules) {
-        for (Schedule schedule : schedules) {
-            if (!this.schedules.contains(schedule)) {
-                this.schedules.add(schedule);
-                schedule.setUser(this);
-            }
-        }
-    }
-
-    public void addManages(List<Manage> manages) {
-        for (Manage manage : manages) {
-            if (!this.manages.contains(manage)) {
-                this.manages.add(manage);
-                manage.setUser(this);
-            }
-        }
-    }
-
     public void updateUser(UserUpdateRequestDto userUpdateRequestDto) {
         if (StringUtils.hasText(userUpdateRequestDto.getName())) {
             this.name = userUpdateRequestDto.getName();

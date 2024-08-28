@@ -34,7 +34,7 @@ public class Schedule extends BaseEntity {
     private String contents;
 
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.PERSIST, orphanRemoval = true)
-    private List<Comment> comments;
+    private List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<Manage> managers;
@@ -43,8 +43,8 @@ public class Schedule extends BaseEntity {
         this.user = user;
         this.title = title;
         this.contents = contents;
-        this.comments = new ArrayList<>();
         this.managers = new ArrayList<>();
+        this.comments = new ArrayList<>();
     }
 
     public static Schedule dtoToEntity(User user, ScheduleRequestDto scheduleRequestDto) {
@@ -53,30 +53,6 @@ public class Schedule extends BaseEntity {
                 scheduleRequestDto.getTitle(),
                 scheduleRequestDto.getContents()
         );
-    }
-
-    public void setUser(User user) {
-        if (this.user != null) {
-            this.user.getSchedules().remove(this);
-        }
-        this.user = user;
-        user.getSchedules().add(this);
-    }
-
-    public void addComment(Comment comment) {
-        this.comments.add(comment);
-        if (comment.getSchedule() != this) {
-            comment.setSchedule(this);
-        }
-    }
-
-    public void addManagers(List<Manage> managers) {
-        for (Manage manager : managers) {
-            if (!this.managers.contains(manager)) {
-                this.managers.add(manager);
-                manager.setSchedule(this);
-            }
-        }
     }
 
     public void updateSchedule(ScheduleRequestDto updateScheduleRequestDto) {

@@ -42,14 +42,6 @@ public class Comment extends BaseEntity {
         );
     }
 
-    public void setSchedule(Schedule schedule) {
-        if (this.schedule != null) {
-            this.schedule.getComments().remove(this);
-        }
-        this.schedule = schedule;
-        schedule.getComments().add(this);
-    }
-
     public void updateComment(CommentRequestDto updateCommentRequestDto) {
         if (StringUtils.hasText(updateCommentRequestDto.getContents())) {
             this.contents = updateCommentRequestDto.getContents();

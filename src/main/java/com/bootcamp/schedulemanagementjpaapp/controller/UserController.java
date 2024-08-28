@@ -1,11 +1,8 @@
 package com.bootcamp.schedulemanagementjpaapp.controller;
 
-import com.bootcamp.schedulemanagementjpaapp.dto.request.UserRegisterRequestDto;
 import com.bootcamp.schedulemanagementjpaapp.dto.request.UserUpdateRequestDto;
-import com.bootcamp.schedulemanagementjpaapp.dto.response.UserRegisterResponseDto;
 import com.bootcamp.schedulemanagementjpaapp.dto.response.UserResponseDto;
 import com.bootcamp.schedulemanagementjpaapp.service.UserService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,15 +17,9 @@ import static com.bootcamp.schedulemanagementjpaapp.contstant.ResponseCode.SUCCE
 public class UserController {
     private final UserService userService;
 
-    @PostMapping("/users")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody UserRegisterRequestDto userRegisterRequestDto) {
-        UserRegisterResponseDto userRegisterResponseDto = userService.registerUser(userRegisterRequestDto);
-        return new ResponseEntity<>(userRegisterResponseDto, SUCCESS.getHttpStatus());
-    }
-
-    @GetMapping("/users/{userId}")
-    public ResponseEntity<?> getUser(@PathVariable("userId") Long userId) {
-        UserResponseDto userResponseDto = userService.getUser(userId);
+    @GetMapping("/users/{userEmail}")
+    public ResponseEntity<?> getUser(@PathVariable("userEmail") String userEmail) {
+        UserResponseDto userResponseDto = userService.getUser(userEmail);
         return new ResponseEntity<>(userResponseDto, SUCCESS.getHttpStatus());
     }
 
@@ -38,15 +29,15 @@ public class UserController {
         return new ResponseEntity<>(userListResponseDto, SUCCESS.getHttpStatus());
     }
 
-    @PatchMapping("/users/{userId}")
-    public ResponseEntity<?> updateUser(@PathVariable("userId") Long userId, @RequestBody UserUpdateRequestDto userUpdateRequestDto) {
-        UserResponseDto userResponseDto = userService.updateUser(userId, userUpdateRequestDto);
+    @PatchMapping("/users/{userEmail}")
+    public ResponseEntity<?> updateUser(@PathVariable("userEmail") String userEmail, @RequestBody UserUpdateRequestDto userUpdateRequestDto) {
+        UserResponseDto userResponseDto = userService.updateUser(userEmail, userUpdateRequestDto);
         return new ResponseEntity<>(userResponseDto, SUCCESS.getHttpStatus());
     }
 
-    @DeleteMapping("/users/{userId}")
-    public ResponseEntity<?> deleteUser(@PathVariable("userId") Long userId) {
-        userService.deleteUser(userId);
+    @DeleteMapping("/users/{userEmail}")
+    public ResponseEntity<?> deleteUser(@PathVariable("userEmail") String userEmail) {
+        userService.deleteUser(userEmail);
         return new ResponseEntity<>(SUCCESS.getResultMessage(), SUCCESS.getHttpStatus());
     }
 }
