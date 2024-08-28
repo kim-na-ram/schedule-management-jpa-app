@@ -49,6 +49,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserLoginResponseDto loginUser(UserLoginRequestDto userLoginRequestDto) {
         User user = userRepository.findByEmail(userLoginRequestDto.getEmail()).orElseThrow(() -> new ApiException(WRONG_EMAIL_OR_PASSWORD));
 
@@ -64,6 +65,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserResponseDto getUser(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ApiException(NOT_EXIST_USER));
@@ -76,6 +78,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<UserResponseDto> getUserList() {
         try {
             return userRepository.findAll()

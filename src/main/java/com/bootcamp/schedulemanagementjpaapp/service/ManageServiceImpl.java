@@ -23,6 +23,7 @@ public class ManageServiceImpl implements ManageService {
     private final UserJPARepository userRepository;
 
     @Override
+    @Transactional
     public void addManagerList(Set<String> managerEmailList, Schedule schedule) {
         deleteManageList(schedule.getId());
         manageRepository.flush();

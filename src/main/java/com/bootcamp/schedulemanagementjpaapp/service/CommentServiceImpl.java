@@ -38,6 +38,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public CommentResponseDto getComment(Long id, Long scheduleId) {
         Comment comment = commentRepository.findByIdAndSchedule_Id(id, scheduleId)
                 .orElseThrow(() -> new ApiException(NOT_EXIST_COMMENT));
@@ -49,6 +50,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<CommentResponseDto> getCommentList(Long scheduleId) {
         try {
             return commentRepository.findAllBySchedule_Id(scheduleId).stream().map(CommentResponseDto::new).toList();
