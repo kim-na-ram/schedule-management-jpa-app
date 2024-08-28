@@ -1,23 +1,33 @@
 package com.bootcamp.schedulemanagementjpaapp.service.schedule;
 
 import com.bootcamp.schedulemanagementjpaapp.common.enums.Authority;
+import com.bootcamp.schedulemanagementjpaapp.common.exception.ApiException;
 import com.bootcamp.schedulemanagementjpaapp.dto.request.ScheduleRequestDto;
 import com.bootcamp.schedulemanagementjpaapp.dto.response.ScheduleFindResponseDto;
 import com.bootcamp.schedulemanagementjpaapp.dto.response.ScheduleResponseDto;
 import com.bootcamp.schedulemanagementjpaapp.entity.Schedule;
 import com.bootcamp.schedulemanagementjpaapp.entity.User;
-import com.bootcamp.schedulemanagementjpaapp.common.exception.ApiException;
 import com.bootcamp.schedulemanagementjpaapp.repository.ScheduleJPARepository;
 import com.bootcamp.schedulemanagementjpaapp.repository.UserJPARepository;
 import com.bootcamp.schedulemanagementjpaapp.service.manage.ManageService;
+import com.bootcamp.schedulemanagementjpaapp.vo.Weather;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.bootcamp.schedulemanagementjpaapp.common.enums.ResponseCode.*;
 
@@ -30,16 +40,33 @@ public class ScheduleServiceImpl implements ScheduleService {
     private final ScheduleJPARepository scheduleRepository;
     private final UserJPARepository userRepository;
 
+    private final RestTemplate restTemplate;
+
     @Override
     public ScheduleResponseDto registerSchedule(String email, ScheduleRequestDto registerScheduleReqDto) {
         User user = userRepository.findUserByEmail(email);
 
         try {
-            Schedule result = scheduleRepository.save(Schedule.dtoToEntity(user, registerScheduleReqDto));
+            String weather = getTodayWeather();
+            Schedule result = scheduleRepository.save(Schedule.dtoToEntity(user, registerScheduleReqDto, weather));
             return ScheduleResponseDto.from(result);
         } catch (Exception e) {
             throw new ApiException(FAIL_REGISTER_SCHEDULE);
         }
+    }
+
+    private String getTodayWeather() throws JsonProcessingException {
+        String url = "https://f-api.github.io/f-api/weather.json";
+        ResponseEntity<?> response = restTemplate.getForEntity(url, String.class);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<Weather> parsingList =
+                objectMapper.readValue(String.valueOf(response.getBody()), new TypeReference<>() {});
+        Map<String, String> weatherMap = parsingList.stream().collect(
+                Collectors.toMap(Weather::getDate, Weather::getWeather));
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd");
+        return weatherMap.get(dateFormat.format(new Date()));
     }
 
     @Override

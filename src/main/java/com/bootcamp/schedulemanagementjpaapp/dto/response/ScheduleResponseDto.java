@@ -14,6 +14,7 @@ public class ScheduleResponseDto {
     private long scheduleId;
     private String title;
     private String contents;
+    private String regDateWeather;
     private String userName;
     private String userEmail;
     private int commentCount;
@@ -25,6 +26,7 @@ public class ScheduleResponseDto {
         this.scheduleId = schedule.getId();
         this.title = schedule.getTitle();
         this.contents = schedule.getContents();
+        this.regDateWeather = schedule.getWeather();
         this.userName = schedule.getUser().getName();
         this.userEmail = schedule.getUser().getEmail();
         this.commentCount = schedule.getComments().size();

@@ -33,25 +33,31 @@ public class Schedule extends BaseEntity {
     @Column
     private String contents;
 
+    @NotNull
+    @Column
+    private String weather;
+
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<Manage> managers;
 
-    private Schedule(User user, String title, String contents) {
+    private Schedule(User user, String title, String contents, String weather) {
         this.user = user;
         this.title = title;
         this.contents = contents;
+        this.weather = weather;
         this.managers = new ArrayList<>();
         this.comments = new ArrayList<>();
     }
 
-    public static Schedule dtoToEntity(User user, ScheduleRequestDto scheduleRequestDto) {
+    public static Schedule dtoToEntity(User user, ScheduleRequestDto scheduleRequestDto, String weather) {
         return new Schedule(
                 user,
                 scheduleRequestDto.getTitle(),
-                scheduleRequestDto.getContents()
+                scheduleRequestDto.getContents(),
+                weather
         );
     }
 
