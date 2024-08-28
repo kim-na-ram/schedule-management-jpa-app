@@ -1,5 +1,6 @@
 package com.bootcamp.schedulemanagementjpaapp.filter;
 
+import com.bootcamp.schedulemanagementjpaapp.contstant.Authority;
 import com.bootcamp.schedulemanagementjpaapp.contstant.ResponseCode;
 import com.bootcamp.schedulemanagementjpaapp.exception.ApiException;
 import com.bootcamp.schedulemanagementjpaapp.repository.UserJPARepository;
@@ -14,6 +15,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+
+import static com.bootcamp.schedulemanagementjpaapp.contstant.ResponseCode.REQUIRED_ACCESS_TOKEN;
 
 @Component
 @RequiredArgsConstructor
@@ -37,18 +40,20 @@ public class AuthFilter extends OncePerRequestFilter {
 
                     jwtUtil.verifyToken(token);
                     String email = jwtUtil.getUserEmail(token);
+                    String authority = jwtUtil.getAuthority(token);
 
-                    if (StringUtils.hasText(email)) {
+                    if (StringUtils.hasText(email) && StringUtils.hasText(authority)) {
                         userRepository.findByEmail(email)
                                 .orElseThrow(() -> new ApiException(ResponseCode.NOT_EXIST_USER));
 
                         request.setAttribute("email", email);
+                        request.setAttribute("authority", Authority.from(authority));
 
                         filterChain.doFilter(request, response);
                     }
 
                 } else {
-                    throw new ApiException(ResponseCode.NOT_EXIST_TOKEN);
+                    throw new ApiException(REQUIRED_ACCESS_TOKEN);
                 }
             }
         } catch (ApiException e) {

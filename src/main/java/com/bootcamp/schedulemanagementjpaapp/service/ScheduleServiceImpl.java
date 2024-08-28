@@ -1,5 +1,6 @@
 package com.bootcamp.schedulemanagementjpaapp.service;
 
+import com.bootcamp.schedulemanagementjpaapp.contstant.Authority;
 import com.bootcamp.schedulemanagementjpaapp.dto.request.ScheduleRequestDto;
 import com.bootcamp.schedulemanagementjpaapp.dto.response.ScheduleFindResponseDto;
 import com.bootcamp.schedulemanagementjpaapp.dto.response.ScheduleResponseDto;
@@ -22,7 +23,7 @@ import static com.bootcamp.schedulemanagementjpaapp.contstant.ResponseCode.*;
 @Service
 @RequiredArgsConstructor
 public class ScheduleServiceImpl implements ScheduleService {
-    private final ManageServiceImpl manageService;
+    private final ManageService manageService;
 
     private final ScheduleJPARepository scheduleRepository;
     private final UserJPARepository userRepository;
@@ -68,16 +69,18 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     @Transactional
-    public ScheduleResponseDto updateSchedule(Long id, String email, ScheduleRequestDto updateScheduleReqDto) {
-        Schedule schedule = scheduleRepository.findByIdAndUser_Email(id, email)
+    public ScheduleResponseDto updateSchedule(Long id, Authority authority, ScheduleRequestDto updateScheduleReqDto) {
+        if(authority != Authority.ADMIN) throw new ApiException(REQUIRED_ADMIN_AUTHORITY);
+
+        Schedule schedule = scheduleRepository.findById(id)
                 .orElseThrow(() -> new ApiException(NOT_EXIST_SCHEDULE));
 
-        try {
-            Set<String> emailSet = Set.copyOf(updateScheduleReqDto.getManagerList());
-            if(!emailSet.isEmpty()) {
-                manageService.assignManage(emailSet, schedule);
-            }
+        Set<String> emailSet = Set.copyOf(updateScheduleReqDto.getManagerList());
+        if(!emailSet.isEmpty()) {
+            manageService.addManagerList(emailSet, schedule);
+        }
 
+        try {
             schedule.updateSchedule(updateScheduleReqDto);
             return new ScheduleResponseDto(scheduleRepository.save(schedule));
         } catch (Exception e) {
@@ -87,8 +90,10 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     @Transactional
-    public void deleteSchedule(Long id, String email) {
-        boolean isExistSchedule = scheduleRepository.existsByIdAndUser_Email(id, email);
+    public void deleteSchedule(Long id, Authority authority) {
+        if(authority != Authority.ADMIN) throw new ApiException(REQUIRED_ADMIN_AUTHORITY);
+
+        boolean isExistSchedule = scheduleRepository.existsById(id);
 
         if (!isExistSchedule) {
             throw new ApiException(NOT_EXIST_SCHEDULE);

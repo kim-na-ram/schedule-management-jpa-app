@@ -36,12 +36,13 @@ public class UserServiceImpl implements UserService {
         }
 
         String encryptPassword = passwordEncoder.encode(userRegisterRequestDto.getPassword());
+        User user = User.dtoToEntity(encryptPassword, userRegisterRequestDto);
 
         try {
-            User user = userRepository.save(User.dtoToEntity(encryptPassword, userRegisterRequestDto));
-            String accessToken = jwtUtil.createAccessToken(userRegisterRequestDto.getEmail());
+            User savedUser = userRepository.save(user);
+            String accessToken = jwtUtil.createAccessToken(userRegisterRequestDto.getEmail(), userRegisterRequestDto.getAuthority());
 
-            return new UserRegisterResponseDto(user, accessToken);
+            return new UserRegisterResponseDto(savedUser, accessToken);
         } catch (Exception e) {
             throw new ApiException(FAIL_REGISTER_USER);
         }
@@ -49,14 +50,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserLoginResponseDto loginUser(UserLoginRequestDto userLoginRequestDto) {
-        User user = userRepository.findByEmail(userLoginRequestDto.getEmail()).orElseThrow(() -> new ApiException(MISMATCH_EMAIL_OR_PASSWORD));
+        User user = userRepository.findByEmail(userLoginRequestDto.getEmail()).orElseThrow(() -> new ApiException(WRONG_EMAIL_OR_PASSWORD));
 
         if(!passwordEncoder.matches(userLoginRequestDto.getPassword(), user.getPassword())) {
-            throw new ApiException(MISMATCH_EMAIL_OR_PASSWORD);
+            throw new ApiException(WRONG_EMAIL_OR_PASSWORD);
         }
 
         try {
-            return new UserLoginResponseDto(jwtUtil.createAccessToken(userLoginRequestDto.getEmail()));
+            return new UserLoginResponseDto(jwtUtil.createAccessToken(userLoginRequestDto.getEmail(), user.getAuthority().getUserRole()));
         } catch (Exception e) {
             throw new ApiException(FAIL_LOGIN_USER);
         }

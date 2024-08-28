@@ -1,5 +1,6 @@
 package com.bootcamp.schedulemanagementjpaapp.entity;
 
+import com.bootcamp.schedulemanagementjpaapp.contstant.Authority;
 import com.bootcamp.schedulemanagementjpaapp.dto.request.UserRegisterRequestDto;
 import com.bootcamp.schedulemanagementjpaapp.dto.request.UserUpdateRequestDto;
 import jakarta.persistence.*;
@@ -33,22 +34,26 @@ public class User extends BaseEntity {
     @Column
     private String password;
 
+    @Enumerated(EnumType.STRING)
+    private Authority authority;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<Schedule> schedules;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<Manage> manages;
 
-    private User(String name, String email, String password) {
+    private User(String name, String email, String password, Authority authority) {
         this.name = name;
         this.email = email;
         this.password = password;
+        this.authority = authority;
         this.schedules = new ArrayList<>();
         this.manages = new ArrayList<>();
     }
 
     public static User dtoToEntity(String encryptPassword, UserRegisterRequestDto userRegisterRequestDto) {
-        return new User(userRegisterRequestDto.getName(), userRegisterRequestDto.getEmail(), encryptPassword);
+        return new User(userRegisterRequestDto.getName(), userRegisterRequestDto.getEmail(), encryptPassword, Authority.from(userRegisterRequestDto.getAuthority()));
     }
 
     public void updateUser(UserUpdateRequestDto userUpdateRequestDto) {

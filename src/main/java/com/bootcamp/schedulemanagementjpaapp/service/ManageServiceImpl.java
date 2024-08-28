@@ -18,12 +18,12 @@ import static com.bootcamp.schedulemanagementjpaapp.contstant.ResponseCode.NOT_E
 
 @Service
 @RequiredArgsConstructor
-public class ManageServiceImpl {
+public class ManageServiceImpl implements ManageService {
     private final ManageJPARepository manageRepository;
     private final UserJPARepository userRepository;
 
-    @Transactional
-    public void assignManage(Set<String> managerEmailList, Schedule schedule) {
+    @Override
+    public void addManagerList(Set<String> managerEmailList, Schedule schedule) {
         deleteManageList(schedule.getId());
         manageRepository.flush();
 
@@ -37,6 +37,7 @@ public class ManageServiceImpl {
         manageRepository.saveAll(manageList);
     }
 
+    @Override
     @Transactional
     public void deleteManageList(Long scheduleId) {
         manageRepository.deleteAllBySchedule_Id(scheduleId);

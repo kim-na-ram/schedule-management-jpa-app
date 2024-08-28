@@ -1,5 +1,6 @@
 package com.bootcamp.schedulemanagementjpaapp.service;
 
+import com.bootcamp.schedulemanagementjpaapp.contstant.Authority;
 import com.bootcamp.schedulemanagementjpaapp.dto.request.ScheduleRequestDto;
 import com.bootcamp.schedulemanagementjpaapp.dto.response.ScheduleFindResponseDto;
 import com.bootcamp.schedulemanagementjpaapp.dto.response.ScheduleResponseDto;
@@ -11,6 +12,6 @@ public interface ScheduleService {
     ScheduleResponseDto registerSchedule(String email, ScheduleRequestDto registerScheduleReqDto);
     ScheduleResponseDto getSchedule(Long id);
     List<ScheduleFindResponseDto> getScheduleList(Pageable pageable);
-    ScheduleResponseDto updateSchedule(Long id, String email, ScheduleRequestDto updateScheduleReqDto);
-    void deleteSchedule(Long id, String email);
+    ScheduleResponseDto updateSchedule(Long id, Authority authority, ScheduleRequestDto updateScheduleReqDto);
+    void deleteSchedule(Long id, Authority authority);
 }

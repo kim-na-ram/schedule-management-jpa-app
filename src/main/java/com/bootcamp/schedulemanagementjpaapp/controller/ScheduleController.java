@@ -1,5 +1,6 @@
 package com.bootcamp.schedulemanagementjpaapp.controller;
 
+import com.bootcamp.schedulemanagementjpaapp.contstant.Authority;
 import com.bootcamp.schedulemanagementjpaapp.dto.request.ScheduleRequestDto;
 import com.bootcamp.schedulemanagementjpaapp.dto.response.ScheduleFindResponseDto;
 import com.bootcamp.schedulemanagementjpaapp.dto.response.ScheduleResponseDto;
@@ -42,13 +43,13 @@ public class ScheduleController {
 
     @PatchMapping("/schedules/{scheduleId}")
     public ResponseEntity<?> updateSchedule(@PathVariable("scheduleId") Long scheduleId, @RequestBody ScheduleRequestDto updateScheduleReqDto, HttpServletRequest request) {
-        ScheduleResponseDto scheduleRspDto = scheduleService.updateSchedule(scheduleId, (String) request.getAttribute("email"), updateScheduleReqDto);
+        ScheduleResponseDto scheduleRspDto = scheduleService.updateSchedule(scheduleId, (Authority) request.getAttribute("authority"), updateScheduleReqDto);
         return new ResponseEntity<>(scheduleRspDto, SUCCESS.getHttpStatus());
     }
 
     @DeleteMapping("/schedules/{scheduleId}")
     public ResponseEntity<?> deleteSchedule(@PathVariable("scheduleId") Long scheduleId, HttpServletRequest request) {
-        scheduleService.deleteSchedule(scheduleId, (String) request.getAttribute("email"));
+        scheduleService.deleteSchedule(scheduleId, (Authority) request.getAttribute("authority"));
         return new ResponseEntity<>(SUCCESS.getResultMessage(), SUCCESS.getHttpStatus());
     }
 }
