@@ -13,6 +13,7 @@ public class UserResponseDto {
     private long userId;
     private String name;
     private String email;
+    private String authority;
     private LocalDateTime regDate;
     private LocalDateTime updateDate;
 
@@ -20,6 +21,7 @@ public class UserResponseDto {
         this.userId = user.getId();
         this.name = user.getName();
         this.email = user.getEmail();
+        this.authority = user.getAuthority().getUserRole();
         this.regDate = user.getRegDate();
         this.updateDate = user.getUpdateDate();
     }

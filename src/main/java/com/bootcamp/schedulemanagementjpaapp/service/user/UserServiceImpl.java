@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService {
         try {
             User savedUser = userRepository.save(user);
             String accessToken =
-                    jwtUtil.createAccessToken(userRegisterRequestDto.getEmail(), userRegisterRequestDto.getAuthority());
+                    jwtUtil.createAccessToken(savedUser.getEmail(), savedUser.getAuthority().getUserRole());
 
             return UserRegisterResponseDto.of(savedUser, accessToken);
         } catch (Exception e) {
