@@ -1,26 +1,26 @@
 package com.bootcamp.schedulemanagementjpaapp.entity;
 
-import com.bootcamp.schedulemanagementjpaapp.dto.request.ScheduleRequestDto;
+import com.bootcamp.schedulemanagementjpaapp.dto.request.ScheduleRegisterRequestDto;
+import com.bootcamp.schedulemanagementjpaapp.dto.request.ScheduleUpdateRequestDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Entity
-@Builder
 @Table(name = "schedule")
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class Schedule extends BaseTime {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class Schedule extends BaseEntity {
     @NotNull
     @ManyToOne
     @JoinColumn(name = "reg_user_id")
@@ -34,42 +34,40 @@ public class Schedule extends BaseTime {
     @Column
     private String contents;
 
+    @NotNull
+    @Column
+    private String weather;
+
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.PERSIST, orphanRemoval = true)
-    private List<Comment> comments;
+    private List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<Manage> managers;
 
-    public void setUser(User user) {
-        if (this.user != null) {
-            this.user.getSchedules().remove(this);
-        }
+    private Schedule(User user, String title, String contents, String weather) {
         this.user = user;
-        user.getSchedules().add(this);
+        this.title = title;
+        this.contents = contents;
+        this.weather = weather;
+        this.managers = new ArrayList<>();
+        this.comments = new ArrayList<>();
     }
 
-    public void addComment(Comment comment) {
-        this.comments.add(comment);
-        if (comment.getSchedule() != this) {
-            comment.setSchedule(this);
-        }
+    public static Schedule dtoToEntity(User user, ScheduleRegisterRequestDto scheduleRegisterRequestDto, String weather) {
+        return new Schedule(
+                user,
+                scheduleRegisterRequestDto.getTitle(),
+                scheduleRegisterRequestDto.getContents(),
+                weather
+        );
     }
 
-    public void addManagers(List<Manage> managers) {
-        for (Manage manager : managers) {
-            if (!this.managers.contains(manager)) {
-                this.managers.add(manager);
-                manager.setSchedule(this);
-            }
+    public void updateSchedule(ScheduleUpdateRequestDto scheduleUpdateRequestDto) {
+        if(StringUtils.hasText(scheduleUpdateRequestDto.getTitle())) {
+            this.title = scheduleUpdateRequestDto.getTitle();
         }
-    }
-
-    public void updateSchedule(ScheduleRequestDto updateScheduleRequestDto) {
-        if(StringUtils.hasText(updateScheduleRequestDto.getTitle())) {
-            this.title = updateScheduleRequestDto.getTitle();
-        }
-        if(StringUtils.hasText(updateScheduleRequestDto.getContents())) {
-            this.contents = updateScheduleRequestDto.getContents();
+        if(StringUtils.hasText(scheduleUpdateRequestDto.getContents())) {
+            this.contents = scheduleUpdateRequestDto.getContents();
         }
     }
 }

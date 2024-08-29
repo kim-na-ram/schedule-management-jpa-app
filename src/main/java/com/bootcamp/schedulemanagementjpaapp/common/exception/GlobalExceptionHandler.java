@@ -1,4 +1,4 @@
-package com.bootcamp.schedulemanagementjpaapp.exception;
+package com.bootcamp.schedulemanagementjpaapp.common.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

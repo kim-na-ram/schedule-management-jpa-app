@@ -1,15 +1,15 @@
 package com.bootcamp.schedulemanagementjpaapp.controller;
 
-import com.bootcamp.schedulemanagementjpaapp.dto.request.UserRequestDto;
+import com.bootcamp.schedulemanagementjpaapp.dto.request.UserUpdateRequestDto;
 import com.bootcamp.schedulemanagementjpaapp.dto.response.UserResponseDto;
-import com.bootcamp.schedulemanagementjpaapp.dto.response.UsersResponseDto;
-import com.bootcamp.schedulemanagementjpaapp.service.UserService;
-import jakarta.validation.Valid;
+import com.bootcamp.schedulemanagementjpaapp.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import static com.bootcamp.schedulemanagementjpaapp.contstant.ResponseCode.SUCCESS;
+import java.util.List;
+
+import static com.bootcamp.schedulemanagementjpaapp.common.enums.ResponseCode.SUCCESS;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,33 +17,30 @@ import static com.bootcamp.schedulemanagementjpaapp.contstant.ResponseCode.SUCCE
 public class UserController {
     private final UserService userService;
 
-    @PostMapping("/users")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody UserRequestDto registerUserRequestDto) {
-        UserResponseDto userResponseDto = userService.registerUser(registerUserRequestDto);
-        return new ResponseEntity<>(userResponseDto, SUCCESS.getHttpStatus());
-    }
-
     @GetMapping("/users/{userId}")
-    public ResponseEntity<?> getUser(@PathVariable("userId") Long userId) {
+    public ResponseEntity<?> getUser(@PathVariable Long userId) {
         UserResponseDto userResponseDto = userService.getUser(userId);
         return new ResponseEntity<>(userResponseDto, SUCCESS.getHttpStatus());
     }
 
     @GetMapping("/users")
-    public ResponseEntity<?> getUsers() {
-        UsersResponseDto usersResponseDto = userService.getAllUsers();
-        return new ResponseEntity<>(usersResponseDto, SUCCESS.getHttpStatus());
+    public ResponseEntity<?> getUserList() {
+        List<UserResponseDto> userListResponseDto = userService.getUserList();
+        return new ResponseEntity<>(userListResponseDto, SUCCESS.getHttpStatus());
     }
 
-    @PatchMapping("/users/{userId}")
-    public ResponseEntity<?> updateUser(@PathVariable("userId") Long userId, @RequestBody UserRequestDto updateUserRequestDto) {
-        UserResponseDto userResponseDto = userService.updateUser(userId, updateUserRequestDto);
+    @PatchMapping("/users")
+    public ResponseEntity<?> updateUser(
+            @RequestParam String email,
+            @RequestBody UserUpdateRequestDto userUpdateRequestDto
+    ) {
+        UserResponseDto userResponseDto = userService.updateUser(email, userUpdateRequestDto);
         return new ResponseEntity<>(userResponseDto, SUCCESS.getHttpStatus());
     }
 
-    @DeleteMapping("/users/{userId}")
-    public ResponseEntity<?> deleteUser(@PathVariable("userId") Long userId) {
-        userService.deleteUser(userId);
+    @DeleteMapping("/users")
+    public ResponseEntity<?> deleteUser(@RequestParam String email) {
+        userService.deleteUser(email);
         return new ResponseEntity<>(SUCCESS.getResultMessage(), SUCCESS.getHttpStatus());
     }
 }

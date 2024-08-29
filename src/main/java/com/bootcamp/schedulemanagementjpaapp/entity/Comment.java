@@ -3,8 +3,7 @@ package com.bootcamp.schedulemanagementjpaapp.entity;
 import com.bootcamp.schedulemanagementjpaapp.dto.request.CommentRequestDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -12,43 +11,39 @@ import org.springframework.util.StringUtils;
 
 @Getter
 @Entity
-@Builder
 @Table(name = "comment")
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
-public class Comment extends BaseTime {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class Comment extends BaseEntity {
     @NotNull
     @ManyToOne
     @JoinColumn(name = "schedule_id")
     private Schedule schedule;
 
     @NotNull
-    @Column(name = "reg_user_name")
-    private String regUserName;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @NotNull
     @Column
     private String contents;
 
-    public void setSchedule(Schedule schedule) {
-        if (this.schedule != null) {
-            this.schedule.getComments().remove(this);
-        }
+    private Comment(Schedule schedule, User user, String contents) {
         this.schedule = schedule;
-        schedule.getComments().add(this);
+        this.user = user;
+        this.contents = contents;
+    }
+
+    public static Comment dtoDoEntity(Schedule schedule, User user, CommentRequestDto commentRequestDto) {
+        return new Comment(
+                schedule,
+                user,
+                commentRequestDto.getContents()
+        );
     }
 
     public void updateComment(CommentRequestDto updateCommentRequestDto) {
-        if (StringUtils.hasText(updateCommentRequestDto.getContents())) {
-            this.contents = updateCommentRequestDto.getContents();
-        }
-        if (StringUtils.hasText(updateCommentRequestDto.getUserName())) {
-            this.regUserName = updateCommentRequestDto.getUserName();
-        }
+        this.contents = updateCommentRequestDto.getContents();
     }
 }

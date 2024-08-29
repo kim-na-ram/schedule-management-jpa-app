@@ -1,0 +1,14 @@
+package com.bootcamp.schedulemanagementjpaapp.service.comment;
+
+import com.bootcamp.schedulemanagementjpaapp.dto.request.CommentRequestDto;
+import com.bootcamp.schedulemanagementjpaapp.dto.response.CommentResponseDto;
+
+import java.util.List;
+
+public interface CommentService {
+    CommentResponseDto registerComment(Long scheduleId, String email, CommentRequestDto registerCommentRequestDto);
+    CommentResponseDto getComment(Long id, Long scheduleId);
+    List<CommentResponseDto> getCommentList(Long id);
+    CommentResponseDto updateComment(Long id, Long scheduleId, String email, CommentRequestDto updateCommentRequestDto);
+    void deleteComment(Long id, Long scheduleId, String email);
+}
