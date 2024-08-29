@@ -17,9 +17,9 @@ import static com.bootcamp.schedulemanagementjpaapp.common.enums.ResponseCode.SU
 public class UserController {
     private final UserService userService;
 
-    @GetMapping("/users/{userEmail}")
-    public ResponseEntity<?> getUser(@PathVariable("userEmail") String userEmail) {
-        UserResponseDto userResponseDto = userService.getUser(userEmail);
+    @GetMapping("/users/{userId}")
+    public ResponseEntity<?> getUser(@PathVariable Long userId) {
+        UserResponseDto userResponseDto = userService.getUser(userId);
         return new ResponseEntity<>(userResponseDto, SUCCESS.getHttpStatus());
     }
 
@@ -29,18 +29,18 @@ public class UserController {
         return new ResponseEntity<>(userListResponseDto, SUCCESS.getHttpStatus());
     }
 
-    @PatchMapping("/users/{userEmail}")
+    @PatchMapping("/users")
     public ResponseEntity<?> updateUser(
-            @PathVariable("userEmail") String userEmail,
+            @RequestParam String email,
             @RequestBody UserUpdateRequestDto userUpdateRequestDto
     ) {
-        UserResponseDto userResponseDto = userService.updateUser(userEmail, userUpdateRequestDto);
+        UserResponseDto userResponseDto = userService.updateUser(email, userUpdateRequestDto);
         return new ResponseEntity<>(userResponseDto, SUCCESS.getHttpStatus());
     }
 
-    @DeleteMapping("/users/{userEmail}")
-    public ResponseEntity<?> deleteUser(@PathVariable("userEmail") String userEmail) {
-        userService.deleteUser(userEmail);
+    @DeleteMapping("/users")
+    public ResponseEntity<?> deleteUser(@RequestParam String email) {
+        userService.deleteUser(email);
         return new ResponseEntity<>(SUCCESS.getResultMessage(), SUCCESS.getHttpStatus());
     }
 }

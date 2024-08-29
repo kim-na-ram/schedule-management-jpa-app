@@ -7,7 +7,9 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class CommentRequestDto {
-    @NotBlank(message = "댓글 내용은 필수입니다.")
+public class ScheduleRegisterRequestDto {
+    @NotBlank(message = "제목은 필수입니다.")
+    private String title;
+    @NotBlank(message = "내용은 필수입니다.")
     private String contents;
 }

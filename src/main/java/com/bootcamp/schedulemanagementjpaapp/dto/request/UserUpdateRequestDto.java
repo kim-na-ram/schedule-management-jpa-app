@@ -5,13 +5,10 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserUpdateRequestDto {
     private String name;
     @Email(message = "잘못된 이메일 형식입니다.")
     private String email;
-    private List<String> managerList;
 }

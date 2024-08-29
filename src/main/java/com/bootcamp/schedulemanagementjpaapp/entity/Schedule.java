@@ -1,6 +1,7 @@
 package com.bootcamp.schedulemanagementjpaapp.entity;
 
-import com.bootcamp.schedulemanagementjpaapp.dto.request.ScheduleRequestDto;
+import com.bootcamp.schedulemanagementjpaapp.dto.request.ScheduleRegisterRequestDto;
+import com.bootcamp.schedulemanagementjpaapp.dto.request.ScheduleUpdateRequestDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -52,21 +53,21 @@ public class Schedule extends BaseEntity {
         this.comments = new ArrayList<>();
     }
 
-    public static Schedule dtoToEntity(User user, ScheduleRequestDto scheduleRequestDto, String weather) {
+    public static Schedule dtoToEntity(User user, ScheduleRegisterRequestDto scheduleRegisterRequestDto, String weather) {
         return new Schedule(
                 user,
-                scheduleRequestDto.getTitle(),
-                scheduleRequestDto.getContents(),
+                scheduleRegisterRequestDto.getTitle(),
+                scheduleRegisterRequestDto.getContents(),
                 weather
         );
     }
 
-    public void updateSchedule(ScheduleRequestDto updateScheduleRequestDto) {
-        if(StringUtils.hasText(updateScheduleRequestDto.getTitle())) {
-            this.title = updateScheduleRequestDto.getTitle();
+    public void updateSchedule(ScheduleUpdateRequestDto scheduleUpdateRequestDto) {
+        if(StringUtils.hasText(scheduleUpdateRequestDto.getTitle())) {
+            this.title = scheduleUpdateRequestDto.getTitle();
         }
-        if(StringUtils.hasText(updateScheduleRequestDto.getContents())) {
-            this.contents = updateScheduleRequestDto.getContents();
+        if(StringUtils.hasText(scheduleUpdateRequestDto.getContents())) {
+            this.contents = scheduleUpdateRequestDto.getContents();
         }
     }
 }

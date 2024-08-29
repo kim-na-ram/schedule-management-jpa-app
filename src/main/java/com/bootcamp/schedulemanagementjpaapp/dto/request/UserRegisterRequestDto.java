@@ -18,6 +18,5 @@ public class UserRegisterRequestDto {
     @NotBlank(message = "비밀번호는 필수입니다.")
     @Size(min = 8, max = 16, message = "비밀번호는 최소 8자에서 최대 16자여야 합니다.")
     private String password;
-    @NotBlank(message = "권한 설정은 필수입니다.")
     private String authority;
 }

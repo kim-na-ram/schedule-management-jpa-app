@@ -1,7 +1,8 @@
 package com.bootcamp.schedulemanagementjpaapp.controller;
 
 import com.bootcamp.schedulemanagementjpaapp.common.enums.Authority;
-import com.bootcamp.schedulemanagementjpaapp.dto.request.ScheduleRequestDto;
+import com.bootcamp.schedulemanagementjpaapp.dto.request.ScheduleRegisterRequestDto;
+import com.bootcamp.schedulemanagementjpaapp.dto.request.ScheduleUpdateRequestDto;
 import com.bootcamp.schedulemanagementjpaapp.dto.response.ScheduleFindResponseDto;
 import com.bootcamp.schedulemanagementjpaapp.dto.response.ScheduleResponseDto;
 import com.bootcamp.schedulemanagementjpaapp.service.schedule.ScheduleService;
@@ -27,10 +28,11 @@ public class ScheduleController {
 
     @PostMapping("/schedules")
     public ResponseEntity<?> registerSchedule(
-            @RequestBody ScheduleRequestDto registerScheduleRequestDto,
-            HttpServletRequest httpServletRequest) {
+            @RequestBody ScheduleRegisterRequestDto scheduleRegisterRequestDto,
+            HttpServletRequest httpServletRequest
+    ) {
         ScheduleResponseDto scheduleRspDto =
-                scheduleService.registerSchedule((String) httpServletRequest.getAttribute(USER_EMAIL), registerScheduleRequestDto);
+                scheduleService.registerSchedule((String) httpServletRequest.getAttribute(USER_EMAIL), scheduleRegisterRequestDto);
         return new ResponseEntity<>(scheduleRspDto, SUCCESS.getHttpStatus());
     }
 
@@ -51,11 +53,10 @@ public class ScheduleController {
     @PatchMapping("/schedules/{scheduleId}")
     public ResponseEntity<?> updateSchedule(
             @PathVariable("scheduleId") Long scheduleId,
-            @RequestBody ScheduleRequestDto updateScheduleReqDto,
-            HttpServletRequest httpServletRequest
-    ) {
+            @RequestBody ScheduleUpdateRequestDto scheduleUpdateRequestDto,
+            HttpServletRequest httpServletRequest) {
         ScheduleResponseDto scheduleRspDto =
-                scheduleService.updateSchedule(scheduleId, (Authority) httpServletRequest.getAttribute(USER_AUTHORITY), updateScheduleReqDto);
+                scheduleService.updateSchedule(scheduleId, (Authority) httpServletRequest.getAttribute(USER_AUTHORITY), scheduleUpdateRequestDto);
         return new ResponseEntity<>(scheduleRspDto, SUCCESS.getHttpStatus());
     }
 

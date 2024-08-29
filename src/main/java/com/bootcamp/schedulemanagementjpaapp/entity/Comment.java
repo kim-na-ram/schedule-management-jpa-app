@@ -21,33 +21,29 @@ public class Comment extends BaseEntity {
     private Schedule schedule;
 
     @NotNull
-    @Column(name = "reg_user_name")
-    private String regUserName;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @NotNull
     @Column
     private String contents;
 
-    private Comment(Schedule schedule, String regUserName, String contents) {
+    private Comment(Schedule schedule, User user, String contents) {
         this.schedule = schedule;
-        this.regUserName = regUserName;
+        this.user = user;
         this.contents = contents;
     }
 
-    public static Comment dtoDoEntity(Schedule schedule, CommentRequestDto commentRequestDto) {
+    public static Comment dtoDoEntity(Schedule schedule, User user, CommentRequestDto commentRequestDto) {
         return new Comment(
                 schedule,
-                commentRequestDto.getUserName(),
+                user,
                 commentRequestDto.getContents()
         );
     }
 
     public void updateComment(CommentRequestDto updateCommentRequestDto) {
-        if (StringUtils.hasText(updateCommentRequestDto.getContents())) {
-            this.contents = updateCommentRequestDto.getContents();
-        }
-        if (StringUtils.hasText(updateCommentRequestDto.getUserName())) {
-            this.regUserName = updateCommentRequestDto.getUserName();
-        }
+        this.contents = updateCommentRequestDto.getContents();
     }
 }

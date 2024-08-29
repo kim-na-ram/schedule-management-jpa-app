@@ -70,8 +70,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public UserResponseDto getUser(String email) {
-        User user = userRepository.findUserByEmail(email);
+    public UserResponseDto getUser(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ApiException(NOT_EXIST_USER));
 
         try {
             return UserResponseDto.from(user);

@@ -20,6 +20,8 @@ public enum ResponseCode {
     FAIL_UPDATE_COMMENT("댓글 수정에 실패하였습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
     FAIL_DELETE_COMMENT("댓글 삭제에 실패하였습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
     NOT_EXIST_COMMENT("존재하지 않는 댓글입니다.", HttpStatus.NOT_FOUND),
+    UNAUTHORIZED_UPDATE_COMMENT("타인이 작성한 댓글은 수정이 불가능합니다.", HttpStatus.UNAUTHORIZED),
+    UNAUTHORIZED_DELETE_COMMENT("타인이 작성한 댓글은 삭제가 불가능합니다.", HttpStatus.UNAUTHORIZED),
 
     // user response code
     FAIL_REGISTER_USER("사용자 등록에 실패하였습니다.", HttpStatus.INTERNAL_SERVER_ERROR),

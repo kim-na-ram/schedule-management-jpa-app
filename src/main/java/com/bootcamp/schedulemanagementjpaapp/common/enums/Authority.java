@@ -1,9 +1,9 @@
 package com.bootcamp.schedulemanagementjpaapp.common.enums;
 
-
 import com.bootcamp.schedulemanagementjpaapp.common.exception.ApiException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.springframework.util.StringUtils;
 
 import static com.bootcamp.schedulemanagementjpaapp.common.enums.ResponseCode.INVALID_USER_AUTHORITY;
 
@@ -16,6 +16,8 @@ public enum Authority {
     private final String userRole;
 
     public static Authority from(String userRole) {
+        if(!StringUtils.hasText(userRole)) return USER;
+
         for (Authority authority : Authority.values()) {
             if (authority.getUserRole().equals(userRole)) {
                 return authority;

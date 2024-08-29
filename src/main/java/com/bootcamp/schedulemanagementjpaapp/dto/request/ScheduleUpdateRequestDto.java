@@ -8,7 +8,7 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class ScheduleRequestDto {
+public class ScheduleUpdateRequestDto {
     private String title;
     private String contents;
     private List<String> managerList;

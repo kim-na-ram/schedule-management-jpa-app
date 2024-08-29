@@ -2,7 +2,8 @@ package com.bootcamp.schedulemanagementjpaapp.service.schedule;
 
 import com.bootcamp.schedulemanagementjpaapp.common.enums.Authority;
 import com.bootcamp.schedulemanagementjpaapp.common.exception.ApiException;
-import com.bootcamp.schedulemanagementjpaapp.dto.request.ScheduleRequestDto;
+import com.bootcamp.schedulemanagementjpaapp.dto.request.ScheduleRegisterRequestDto;
+import com.bootcamp.schedulemanagementjpaapp.dto.request.ScheduleUpdateRequestDto;
 import com.bootcamp.schedulemanagementjpaapp.dto.response.ScheduleFindResponseDto;
 import com.bootcamp.schedulemanagementjpaapp.dto.response.ScheduleResponseDto;
 import com.bootcamp.schedulemanagementjpaapp.entity.Schedule;
@@ -43,12 +44,12 @@ public class ScheduleServiceImpl implements ScheduleService {
     private final RestTemplate restTemplate;
 
     @Override
-    public ScheduleResponseDto registerSchedule(String email, ScheduleRequestDto registerScheduleReqDto) {
+    public ScheduleResponseDto registerSchedule(String email, ScheduleRegisterRequestDto scheduleRegisterRequestDto) {
         User user = userRepository.findUserByEmail(email);
 
         try {
             String weather = getTodayWeather();
-            Schedule result = scheduleRepository.save(Schedule.dtoToEntity(user, registerScheduleReqDto, weather));
+            Schedule result = scheduleRepository.save(Schedule.dtoToEntity(user, scheduleRegisterRequestDto, weather));
             return ScheduleResponseDto.from(result);
         } catch (Exception e) {
             throw new ApiException(FAIL_REGISTER_SCHEDULE);
@@ -94,18 +95,18 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public ScheduleResponseDto updateSchedule(Long id, Authority authority, ScheduleRequestDto updateScheduleReqDto) {
+    public ScheduleResponseDto updateSchedule(Long id, Authority authority, ScheduleUpdateRequestDto scheduleUpdateRequestDto) {
         if(authority != Authority.ADMIN) throw new ApiException(REQUIRED_ADMIN_AUTHORITY);
 
         Schedule schedule = scheduleRepository.findScheduleById(id);
 
-        Set<String> emailSet = Set.copyOf(updateScheduleReqDto.getManagerList());
+        Set<String> emailSet = Set.copyOf(scheduleUpdateRequestDto.getManagerList());
         if(!emailSet.isEmpty()) {
             manageService.addManagerList(emailSet, schedule);
         }
 
         try {
-            schedule.updateSchedule(updateScheduleReqDto);
+            schedule.updateSchedule(scheduleUpdateRequestDto);
             return ScheduleResponseDto.from(scheduleRepository.save(schedule));
         } catch (Exception e) {
             throw new ApiException(FAIL_UPDATE_SCHEDULE);
