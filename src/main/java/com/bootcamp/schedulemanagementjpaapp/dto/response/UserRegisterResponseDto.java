@@ -13,6 +13,7 @@ public class UserRegisterResponseDto {
     private long userId;
     private String name;
     private String email;
+    private String authority;
     private LocalDateTime regDate;
     private LocalDateTime updateDate;
     private String accessToken;
@@ -21,6 +22,7 @@ public class UserRegisterResponseDto {
         this.userId = user.getId();
         this.name = user.getName();
         this.email = user.getEmail();
+        this.authority = user.getAuthority().getUserRole();
         this.regDate = user.getRegDate();
         this.updateDate = user.getUpdateDate();
         this.accessToken = accessToken;
