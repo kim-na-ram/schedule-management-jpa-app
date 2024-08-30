@@ -6,6 +6,7 @@ import com.bootcamp.schedulemanagementjpaapp.dto.request.UserUpdateRequestDto;
 import com.bootcamp.schedulemanagementjpaapp.dto.response.UserLoginResponseDto;
 import com.bootcamp.schedulemanagementjpaapp.dto.response.UserRegisterResponseDto;
 import com.bootcamp.schedulemanagementjpaapp.dto.response.UserResponseDto;
+import com.bootcamp.schedulemanagementjpaapp.entity.User;
 
 import java.util.List;
 

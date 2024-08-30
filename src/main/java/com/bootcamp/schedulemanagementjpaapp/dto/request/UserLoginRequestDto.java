@@ -1,14 +1,15 @@
 package com.bootcamp.schedulemanagementjpaapp.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
-import lombok.Builder;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
-@Builder
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserLoginRequestDto {
-    @NotBlank(message = "로그인 시, 이메일은 필수입니다.")
-    private final String email;
-    @NotBlank(message = "로그인 시, 비밀번호는 필수입니다.")
-    private final String password;
+    @NotBlank(message = "{auth.login.email.blank}")
+    private String email;
+    @NotBlank(message = "{auth.login.password.blank}")
+    private String password;
 }

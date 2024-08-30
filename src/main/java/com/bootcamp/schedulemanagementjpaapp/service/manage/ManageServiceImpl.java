@@ -38,7 +38,7 @@ public class ManageServiceImpl implements ManageService {
     }
 
     @Override
-    public void deleteManageList(Long scheduleId) {
+    public void deleteManageList(long scheduleId) {
         manageRepository.deleteAllBySchedule_Id(scheduleId);
     }
 }

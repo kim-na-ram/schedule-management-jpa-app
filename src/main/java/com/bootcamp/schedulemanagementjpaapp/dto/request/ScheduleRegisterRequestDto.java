@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ScheduleRegisterRequestDto {
-    @NotBlank(message = "제목은 필수입니다.")
+    @NotBlank(message = "{schedule.title.blank}")
     private String title;
-    @NotBlank(message = "내용은 필수입니다.")
+    @NotBlank(message = "{schedule.contents.blank}")
     private String contents;
 }

@@ -1,13 +1,11 @@
 package com.bootcamp.schedulemanagementjpaapp.common.util;
 
 import com.bootcamp.schedulemanagementjpaapp.common.exception.ApiException;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.security.SignatureException;
+import io.jsonwebtoken.security.SecurityException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -16,9 +14,9 @@ import java.util.Date;
 
 import static com.bootcamp.schedulemanagementjpaapp.common.constant.Const.USER_AUTHORITY;
 import static com.bootcamp.schedulemanagementjpaapp.common.constant.Const.USER_EMAIL;
-import static com.bootcamp.schedulemanagementjpaapp.common.enums.ResponseCode.EXPIRE_ACCESS_TOKEN;
-import static com.bootcamp.schedulemanagementjpaapp.common.enums.ResponseCode.INVALID_ACCESS_TOKEN;
+import static com.bootcamp.schedulemanagementjpaapp.common.enums.ResponseCode.*;
 
+@Slf4j
 @Component
 public class JWTUtil {
     private static final long TOKEN_TIME = 60 * 60 * 1000L; // 60분
@@ -57,10 +55,15 @@ public class JWTUtil {
     public void verifyToken(String jwtToken) {
         try {
             getClaimsFromToken(jwtToken);
-        } catch (SignatureException e) {
-            throw new ApiException(INVALID_ACCESS_TOKEN);
         } catch (ExpiredJwtException e) {
+            log.error("Expired JWT token");
             throw new ApiException(EXPIRE_ACCESS_TOKEN);
+        } catch (SecurityException | MalformedJwtException e) {
+            log.error("Invalid JWT token");
+            throw new ApiException(INVALID_ACCESS_TOKEN);
+        } catch (Exception e) {
+            log.error("Unexpected error occurred while verifying JWT token");
+            throw new ApiException(FAIL_ACCESS_TOKEN_VALIDATION);
         }
     }
 }

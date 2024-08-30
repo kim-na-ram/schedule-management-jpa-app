@@ -14,4 +14,9 @@ public class ApiException extends RuntimeException {
         this.resultMessage = responseCode.getResultMessage();
         this.httpStatus = responseCode.getHttpStatus();
     }
+
+    @Override
+    public String getMessage() {
+        return resultMessage;
+    }
 }
