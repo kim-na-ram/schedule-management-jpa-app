@@ -38,18 +38,22 @@ public class User extends BaseEntity {
     private Authority authority;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST, orphanRemoval = true)
-    private List<Schedule> schedules;
+    private List<Schedule> scheduleList;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST, orphanRemoval = true)
-    private List<Manage> manages;
+    private List<Comment> commentList;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    private List<Manage> manageList;
 
     private User(String name, String email, String password, Authority authority) {
         this.name = name;
         this.email = email;
         this.password = password;
         this.authority = authority;
-        this.schedules = new ArrayList<>();
-        this.manages = new ArrayList<>();
+        this.scheduleList = new ArrayList<>();
+        this.commentList = new ArrayList<>();
+        this.manageList = new ArrayList<>();
     }
 
     public static User dtoToEntity(String encryptPassword, UserRegisterRequestDto userRegisterRequestDto) {
@@ -60,8 +64,8 @@ public class User extends BaseEntity {
         if (StringUtils.hasText(userUpdateRequestDto.getName())) {
             this.name = userUpdateRequestDto.getName();
         }
-        if (StringUtils.hasText(userUpdateRequestDto.getEmail())) {
-            this.email = userUpdateRequestDto.getEmail();
+        if (StringUtils.hasText(userUpdateRequestDto.getAuthority())) {
+            this.authority = Authority.from(userUpdateRequestDto.getAuthority());
         }
     }
 }

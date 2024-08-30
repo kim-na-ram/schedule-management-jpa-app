@@ -20,8 +20,7 @@ public enum ResponseCode {
     FAIL_UPDATE_COMMENT("댓글 수정에 실패하였습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
     FAIL_DELETE_COMMENT("댓글 삭제에 실패하였습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
     NOT_EXIST_COMMENT("존재하지 않는 댓글입니다.", HttpStatus.NOT_FOUND),
-    UNAUTHORIZED_UPDATE_COMMENT("타인이 작성한 댓글은 수정이 불가능합니다.", HttpStatus.UNAUTHORIZED),
-    UNAUTHORIZED_DELETE_COMMENT("타인이 작성한 댓글은 삭제가 불가능합니다.", HttpStatus.UNAUTHORIZED),
+    UNAUTHORIZED_UPDATE_OR_DELETE_COMMENT("타인이 작성한 댓글은 수정/삭제가 불가능합니다.", HttpStatus.UNAUTHORIZED),
 
     // user response code
     FAIL_REGISTER_USER("사용자 등록에 실패하였습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
@@ -36,7 +35,8 @@ public enum ResponseCode {
     WRONG_EMAIL_OR_PASSWORD("잘못된 이메일 또는 비밀번호입니다.", HttpStatus.UNAUTHORIZED),
     REQUIRED_ACCESS_TOKEN("토큰이 필요합니다.", HttpStatus.BAD_REQUEST),
     INVALID_ACCESS_TOKEN("유효하지 않은 토큰입니다.", HttpStatus.BAD_REQUEST),
-    EXPIRE_ACCESS_TOKEN("유효 기간이 만료된 토큰입니다.", HttpStatus.UNAUTHORIZED)
+    EXPIRE_ACCESS_TOKEN("유효 기간이 만료된 토큰입니다.", HttpStatus.UNAUTHORIZED),
+    FAIL_ACCESS_TOKEN_VALIDATION("토큰 검증에 실패하였습니다.", HttpStatus.UNAUTHORIZED)
     ;
 
     private final String resultMessage;

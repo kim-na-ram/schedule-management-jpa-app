@@ -1,6 +1,7 @@
 package com.bootcamp.schedulemanagementjpaapp.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,6 +9,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CommentRequestDto {
-    @NotBlank(message = "댓글 내용은 필수입니다.")
+    @NotNull(message = "{comment.scheduleId.null}")
+    private Long scheduleId;
+    @NotBlank(message = "{comment.contents.blank}")
     private String contents;
 }
