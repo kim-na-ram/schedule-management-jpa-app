@@ -1,4 +1,4 @@
-package com.bootcamp.schedulemanagementjpaapp.dto;
+package com.bootcamp.schedulemanagementjpaapp.dto.response;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

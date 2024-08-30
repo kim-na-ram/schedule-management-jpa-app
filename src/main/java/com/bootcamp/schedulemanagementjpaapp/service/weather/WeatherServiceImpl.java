@@ -1,6 +1,6 @@
 package com.bootcamp.schedulemanagementjpaapp.service.weather;
 
-import com.bootcamp.schedulemanagementjpaapp.dto.WeatherResponseDto;
+import com.bootcamp.schedulemanagementjpaapp.dto.response.WeatherResponseDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
