@@ -6,5 +6,5 @@ import java.util.Set;
 
 public interface ManageService {
     void addManagerList(Set<String> managerEmailList, Schedule schedule);
-    void deleteManageList(Long scheduleId);
+    void deleteManageList(long scheduleId);
 }

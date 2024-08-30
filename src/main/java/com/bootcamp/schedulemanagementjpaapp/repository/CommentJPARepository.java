@@ -1,13 +1,13 @@
 package com.bootcamp.schedulemanagementjpaapp.repository;
 
+import com.bootcamp.schedulemanagementjpaapp.common.exception.ApiException;
 import com.bootcamp.schedulemanagementjpaapp.entity.Comment;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
-import java.util.Optional;
+import static com.bootcamp.schedulemanagementjpaapp.common.enums.ResponseCode.NOT_EXIST_COMMENT;
 
 public interface CommentJPARepository extends JpaRepository<Comment, Long> {
-    Optional<Comment> findByIdAndSchedule_Id(Long id, Long scheduleId);
-    List<Comment> findAllBySchedule_Id(Long scheduleId);
-    void deleteByIdAndSchedule_Id(Long id, Long scheduleId);
+    default Comment findCommentById(Long id) {
+        return findById(id).orElseThrow(() -> new ApiException(NOT_EXIST_COMMENT));
+    }
 }

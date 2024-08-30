@@ -97,9 +97,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDto updateUser(String email, UserUpdateRequestDto userUpdateRequestDto) {
         User user = userRepository.findUserByEmail(email);
+        user.updateUser(userUpdateRequestDto);
 
         try {
-            user.updateUser(userUpdateRequestDto);
             return UserResponseDto.from(userRepository.save(user));
         } catch (Exception e) {
             throw new ApiException(FAIL_UPDATE_USER);

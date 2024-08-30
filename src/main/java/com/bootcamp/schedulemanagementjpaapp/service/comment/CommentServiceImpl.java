@@ -1,10 +1,10 @@
 package com.bootcamp.schedulemanagementjpaapp.service.comment;
 
+import com.bootcamp.schedulemanagementjpaapp.common.exception.ApiException;
 import com.bootcamp.schedulemanagementjpaapp.dto.request.CommentRequestDto;
 import com.bootcamp.schedulemanagementjpaapp.dto.response.CommentResponseDto;
 import com.bootcamp.schedulemanagementjpaapp.entity.Comment;
 import com.bootcamp.schedulemanagementjpaapp.entity.Schedule;
-import com.bootcamp.schedulemanagementjpaapp.common.exception.ApiException;
 import com.bootcamp.schedulemanagementjpaapp.entity.User;
 import com.bootcamp.schedulemanagementjpaapp.repository.CommentJPARepository;
 import com.bootcamp.schedulemanagementjpaapp.repository.ScheduleJPARepository;
@@ -26,12 +26,11 @@ public class CommentServiceImpl implements CommentService {
     private final UserJPARepository userRepository;
 
     @Override
-    public CommentResponseDto registerComment(Long scheduleId, String email, CommentRequestDto registerCommentRequestDto) {
-        Schedule schedule = scheduleRepository.findById(scheduleId)
+    public CommentResponseDto registerComment(String email, CommentRequestDto registerCommentRequestDto) {
+        Schedule schedule = scheduleRepository.findById(registerCommentRequestDto.getScheduleId())
                 .orElseThrow(() -> new ApiException(NOT_EXIST_SCHEDULE));
 
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ApiException(NOT_EXIST_USER));
+        User user = userRepository.findUserByEmail(email);
 
         try {
             Comment comment = Comment.dtoDoEntity(schedule, user, registerCommentRequestDto);
@@ -45,9 +44,9 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional(readOnly = true)
-    public CommentResponseDto getComment(Long id, Long scheduleId) {
-        Comment comment = commentRepository.findByIdAndSchedule_Id(id, scheduleId)
-                .orElseThrow(() -> new ApiException(NOT_EXIST_COMMENT));
+    public CommentResponseDto getComment(Long id) {
+        Comment comment = commentRepository.findCommentById(id);
+
         try {
             return CommentResponseDto.from(comment);
         } catch (ApiException e) {
@@ -57,21 +56,20 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<CommentResponseDto> getCommentList(Long scheduleId) {
+    public List<CommentResponseDto> getCommentList() {
         try {
-            return commentRepository.findAllBySchedule_Id(scheduleId).stream().map(CommentResponseDto::from).toList();
+            return commentRepository.findAll().stream().map(CommentResponseDto::from).toList();
         } catch (ApiException e) {
             throw new ApiException(FAIL_GET_COMMENT);
         }
     }
 
     @Override
-    public CommentResponseDto updateComment(Long id, Long scheduleId, String email, CommentRequestDto updateCommentRequestDto) {
-        Comment comment = commentRepository.findByIdAndSchedule_Id(id, scheduleId)
-                .orElseThrow(() -> new ApiException(NOT_EXIST_COMMENT));
+    public CommentResponseDto updateComment(Long id, String email, CommentRequestDto updateCommentRequestDto) {
+        Comment comment = commentRepository.findCommentById(id);
 
         if(!comment.getUser().getEmail().equals(email)) {
-            throw new ApiException(UNAUTHORIZED_UPDATE_COMMENT);
+            throw new ApiException(UNAUTHORIZED_UPDATE_OR_DELETE_COMMENT);
         }
 
         try {
@@ -83,16 +81,15 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void deleteComment(Long id, Long scheduleId, String email) {
-        Comment comment = commentRepository.findByIdAndSchedule_Id(id, scheduleId)
-                .orElseThrow(() -> new ApiException(NOT_EXIST_COMMENT));
+    public void deleteComment(Long id, String email) {
+        Comment comment = commentRepository.findCommentById(id);
 
         if(!comment.getUser().getEmail().equals(email)) {
-            throw new ApiException(UNAUTHORIZED_DELETE_COMMENT);
+            throw new ApiException(UNAUTHORIZED_UPDATE_OR_DELETE_COMMENT);
         }
 
         try {
-            commentRepository.deleteByIdAndSchedule_Id(id, scheduleId);
+            commentRepository.deleteById(id);
         } catch (Exception e) {
             throw new ApiException(FAIL_DELETE_COMMENT);
         }
